@@ -2,6 +2,23 @@
 <configurationDescriptor version="95">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
+      <df name="tp1_debase">
+        <in>array.c</in>
+        <in>array.h</in>
+        <in>gc.h</in>
+        <in>geometry.c</in>
+        <in>geometry.h</in>
+        <in>main.c</in>
+        <in>tests.c</in>
+        <in>tests.h</in>
+        <in>tiny_gc.c</in>
+        <in>tiny_gc.h</in>
+        <in>triangulation.C</in>
+        <in>triangulation.c</in>
+        <in>triangulation.h</in>
+        <in>triangulation_tools.c</in>
+        <in>triangulation_tools.h</in>
+      </df>
       <in>test.c</in>
     </df>
   </logicalFolder>

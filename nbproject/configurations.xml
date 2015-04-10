@@ -30,7 +30,7 @@
           <buildCommandWorkingDir>.</buildCommandWorkingDir>
           <buildCommand>${MAKE} -f makefile</buildCommand>
           <cleanCommand>${MAKE} -f makefile clean</cleanCommand>
-          <executablePath></executablePath>
+          <executablePath>test</executablePath>
         </makeTool>
       </makefileType>
       <item path="test.c" ex="false" tool="0" flavor2="2">

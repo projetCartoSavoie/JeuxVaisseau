@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <gc/gc.h>
 
 int main(int argc, char *argv[]) {
     if (SDL_Init(SDL_INIT_VIDEO) == -1) {// Démarrage de la SDL. Si erreur alors...
