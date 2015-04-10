@@ -1,0 +1,74 @@
+# Décomenter une de ces trois lignes
+
+#GC=USE_TINY    # utiliser le mini GC fourni
+GC=USE_BOEHM   # utiliser le GC de Boehm si installé
+#GC=NO_GC       # pas de GC (toute la mémoire ne sera pas libéré.
+
+ifeq '$(strip $(GC))' 'USE_TINY'
+GC_SRC=tiny_gc.c
+else
+GC_SRC=
+endif
+
+ifeq '$(strip $(GC))' 'USE_BOEHM'
+GC_LIB=-lgc
+else
+GC_LIB=
+endif
+
+SRCS=$(GC_SRC) triangulation.c geometry.c array.c triangulation_tools.c main.c
+OBJS=$(SRCS:.c=.o)
+INCLUDES=
+CFLAGS= $(INCLUDES) -Wall -g -D $(GC)
+LINKFLAGS=$(GC_LIB) -lSDL -lGL -lGLU
+CC=gcc
+
+.PHONY: depend clean
+
+main.exe: $(OBJS)
+	gcc $(LINKFLAGS) -o $@ $(OBJS)
+
+depend:
+	makedepend $(CFLAGS) $(SRCS)
+
+clean:
+	- rm main.exe $(OBJS) *~ #*#
+
+# DO NOT DELETE
+
+triangulation.o: /usr/include/stdlib.h /usr/include/features.h
+triangulation.o: /usr/include/alloca.h /usr/include/stdio.h
+triangulation.o: /usr/include/libio.h /usr/include/_G_config.h
+triangulation.o: /usr/include/wchar.h /usr/include/assert.h tiny_gc.h
+triangulation.o: triangulation.h
+geometry.o: /usr/include/math.h /usr/include/features.h geometry.h
+array.o: /usr/include/assert.h /usr/include/features.h /usr/include/string.h
+array.o: /usr/include/xlocale.h tiny_gc.h /usr/include/stdlib.h
+array.o: /usr/include/alloca.h array.h /usr/include/GL/gl.h
+array.o: /usr/include/GL/glext.h /usr/include/inttypes.h
+array.o: /usr/include/stdint.h geometry.h triangulation.h
+triangulation_tools.o: /usr/include/assert.h /usr/include/features.h
+triangulation_tools.o: triangulation_tools.h array.h /usr/include/GL/gl.h
+triangulation_tools.o: /usr/include/GL/glext.h /usr/include/inttypes.h
+triangulation_tools.o: /usr/include/stdint.h geometry.h triangulation.h
+main.o: /usr/include/stdio.h /usr/include/features.h /usr/include/libio.h
+main.o: /usr/include/_G_config.h /usr/include/wchar.h /usr/include/stdlib.h
+main.o: /usr/include/alloca.h /usr/include/GL/gl.h /usr/include/GL/glext.h
+main.o: /usr/include/inttypes.h /usr/include/stdint.h /usr/include/GL/glu.h
+main.o: /usr/include/SDL/SDL.h /usr/include/SDL/SDL_main.h
+main.o: /usr/include/SDL/SDL_stdinc.h /usr/include/SDL/SDL_config.h
+main.o: /usr/include/SDL/SDL_platform.h /usr/include/string.h
+main.o: /usr/include/xlocale.h /usr/include/strings.h /usr/include/ctype.h
+main.o: /usr/include/endian.h /usr/include/iconv.h
+main.o: /usr/include/SDL/begin_code.h /usr/include/SDL/close_code.h
+main.o: /usr/include/SDL/SDL_audio.h /usr/include/SDL/SDL_error.h
+main.o: /usr/include/SDL/SDL_endian.h /usr/include/SDL/SDL_mutex.h
+main.o: /usr/include/SDL/SDL_thread.h /usr/include/SDL/SDL_rwops.h
+main.o: /usr/include/SDL/SDL_cdrom.h /usr/include/SDL/SDL_cpuinfo.h
+main.o: /usr/include/SDL/SDL_events.h /usr/include/SDL/SDL_active.h
+main.o: /usr/include/SDL/SDL_keyboard.h /usr/include/SDL/SDL_keysym.h
+main.o: /usr/include/SDL/SDL_mouse.h /usr/include/SDL/SDL_video.h
+main.o: /usr/include/SDL/SDL_joystick.h /usr/include/SDL/SDL_quit.h
+main.o: /usr/include/SDL/SDL_loadso.h /usr/include/SDL/SDL_timer.h
+main.o: /usr/include/SDL/SDL_version.h /usr/include/math.h tiny_gc.h
+main.o: geometry.h array.h triangulation.h triangulation_tools.h
