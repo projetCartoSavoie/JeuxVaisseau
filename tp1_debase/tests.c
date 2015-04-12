@@ -53,47 +53,39 @@ half_edge test_cylindre(point3d D, point3d A, double R, int precision) {
         J -> z = -(N -> x);
     }
     normalize3d(J);
-    printf("J : %f %f %f \n", J -> x, J -> y, J -> z );
 
     //Trouver I = N^J
     vecteur3d I = GC_malloc(sizeof (vecteur3d));
     vec_prod3d(I, N, J);
     normalize3d(I);
-    printf("I : %f %f %f \n", I -> x, I -> y, I -> z );
+    
+    //Ici N est encore défini
     printf("N : %f %f %f \n", N -> x, N -> y, N -> z );
 
     //P0 = D+RI //Pk = D + Rcos(kt)I + Rsin(kt)J
     point3d P = GC_malloc(precision * sizeof (point3d));
     point3d Q = GC_malloc(precision * sizeof (point3d));
     
+    //Ici N ne l'est plus si utilisation GG_BOEHM
     printf("N : %f %f %f \n", N -> x, N -> y, N -> z );
 
     int k;
     double t = 2 * M_PI / precision;
     for (k = 0; k < precision; k++) {
         
-        printf("N%d : %f %f %f \n", k, N -> x, N -> y, N -> z );
-        
         //P[k] = D + R*cos(t*k)I + R*sin(t*k)J
         //Qk = Translate Pk de vecteur DA
         cp_point3d(&P[k], D);
         
-        printf("N%d : %f %f %f \n", k, N -> x, N -> y, N -> z );
-
         translate3d(&P[k], R * cos(t * k), I);
         translate3d(&P[k], R * sin(t * k), J);
         
-        printf("N%d : %f %f %f \n", k, N -> x, N -> y, N -> z );
-
         cp_point3d(&Q[k], &P[k]);
         //translate3d(&Q[k], 1.0, N);
         Q[k].x = Q[k].x + N -> x;
         Q[k].y = Q[k].y + N -> y;
         Q[k].z = Q[k].z + N -> z;
         
-        printf("N : %f %f %f \n", N -> x, N -> y, N -> z );
-        printf("P[%d] : %f %f %f \n", k, P[k].x, P[k].y, P[k].z );
-        printf("Q[%d] : %f %f %f \n", k, Q[k].x, Q[k].y, Q[k].z );
     }
 
     gl_vertex** GP = GC_malloc(precision * sizeof (gl_vertex*));
