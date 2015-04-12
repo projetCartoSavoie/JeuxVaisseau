@@ -1,0 +1,14 @@
+gcc  -Wall -g -D USE_BOEHM      -c -o triangulation.o triangulation.c
+gcc  -Wall -g -D USE_BOEHM      -c -o geometry.o geometry.c
+gcc  -Wall -g -D USE_BOEHM      -c -o array.o array.c
+gcc  -Wall -g -D USE_BOEHM      -c -o triangulation_tools.o triangulation_tools.c
+gcc  -Wall -g -D USE_BOEHM      -c -o tests.o tests.c
+gcc  -Wall -g -D USE_BOEHM      -c -o main.o main.c
+main.c: In function ‘initGLScene’:
+main.c:135:5: warning: implicit declaration of function ‘test_cylindre’ [-Wimplicit-function-declaration]
+     tetra = test_cylindre(D, A, R, precision); 
+     ^
+main.c:135:11: warning: assignment makes pointer from integer without a cast [enabled by default]
+     tetra = test_cylindre(D, A, R, precision); 
+           ^
+gcc   -Wall -g -D USE_BOEHM    -o main.exe triangulation.o geometry.o array.o triangulation_tools.o tests.o main.o -lgc -lm -lSDL2 -lGL -lGLU

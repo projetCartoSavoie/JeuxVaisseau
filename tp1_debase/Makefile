@@ -1,8 +1,8 @@
 # Décomenter une de ces trois lignes
 
 #GC=USE_TINY    # utiliser le mini GC fourni
-GC=USE_BOEHM   # utiliser le GC de Boehm si installé
-#GC=NO_GC       # pas de GC (toute la mémoire ne sera pas libéré.
+#GC=USE_BOEHM   # utiliser le GC de Boehm si installé
+GC=NO_GC       # pas de GC (toute la mémoire ne sera pas libéré.
 
 OSX=0 # mettre 1 sur Mac
 
