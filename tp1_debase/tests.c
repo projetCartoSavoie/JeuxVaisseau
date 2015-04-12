@@ -97,16 +97,16 @@ half_edge test_cylindre(point3d D, point3d A, double R, int precision) {
     }
 
     //Triangles PkQkQ(k+1) et PkQ(k+1)P(k+1)
-    //Premier cas
+    //Premier cas (OK)
     half_edge e1 = create_triangle(GP[0], GQ[0], GQ[1]);
     add_vertex_to_edge(e1 -> next, GP[1]);
-    half_edge epred = e1 -> opp -> prev -> opp;
+    half_edge epred = e1 -> next -> next -> opp -> next;
 
-    //Boucle
+    //Boucle (pas ok : un seul triangle)
     for (k = 1; k < precision - 1; k++) {
         add_vertex_to_edge(epred, GQ[k + 1]);
         add_vertex_to_edge(epred -> next, GP[k + 1]);
-        epred = epred -> opp -> prev -> opp;
+        epred = epred -> next -> next -> opp -> next;
     }
 
     //Dernier cas

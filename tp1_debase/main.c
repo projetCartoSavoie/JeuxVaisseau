@@ -121,12 +121,12 @@ gl_object *gl_tetra = NULL;
 void initGLScene() {
     point3d_cell D[1];
     point3d_cell A[1];
-    double R = 5.0;
+    double R = 3.0;
     int precision = 10;
 
     D -> x = 0.0;
     D -> y = 0.0;
-    D-> z = -30.0;
+    D-> z = -10.0;
 
     A -> x = 0.0;
     A -> y = 0.0;
