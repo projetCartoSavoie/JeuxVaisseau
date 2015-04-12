@@ -96,7 +96,7 @@ void close_triangle(half_edge e1, half_edge e2) {
   e3->next = ne3; ne3->prev = e3;
 }
 
-VERTEX fill_triangle(half_edge e1, half_edge e2, half_edge e3) {
+void fill_triangle(half_edge e1, half_edge e2, half_edge e3) {
 
   assert(e1->next == NULL);
   assert(e1->opp->prev == NULL);

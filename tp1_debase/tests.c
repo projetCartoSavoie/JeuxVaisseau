@@ -110,8 +110,10 @@ half_edge test_cylindre(point3d D, point3d A, double R, int precision) {
     }
 
     //Dernier cas
-    /*half_edge e2 = close_triangle(e1 -> opp,epred, );
-    e2 = fill_triangle(GP[precision - 1], GQ[0], GP[0]);*/
+    half_edge e2 = create_edge(GQ[precision - 1], GQ[0]);
+    close_triangle(epred, e2);
+    half_edge e3 = create_edge(GP[0],GP[precision -1]);
+    fill_triangle(epred -> next, e1 -> opp, e3);
 
     //Rendre le premier half_edge
     return e1 -> opp -> prev;
