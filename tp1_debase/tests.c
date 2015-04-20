@@ -32,13 +32,13 @@ void cp_point3d(point3d R, const point3d D) {
 half_edge test_cylindre(point3d D, point3d A, double R, int precision) {
 
     //Trouver N
-    vecteur3d N = GC_malloc(sizeof (vecteur3d));
+    vecteur3d N = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
     vec3d(N, D, A);
 
     assert(!(N -> x == 0 && N -> y == 0 && N -> z == 0));
 
     //Trouver J
-    vecteur3d J = GC_malloc(sizeof (vecteur3d));
+    vecteur3d J = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
     if (abs(N -> z) < abs(N -> x) && abs(N -> z) < abs(N -> y)) {
         J -> x = N -> y;
         J -> y = -(N -> x);
@@ -55,7 +55,7 @@ half_edge test_cylindre(point3d D, point3d A, double R, int precision) {
     normalize3d(J);
 
     //Trouver I = N^J
-    vecteur3d I = GC_malloc(sizeof (vecteur3d));
+    vecteur3d I = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
     vec_prod3d(I, N, J);
     normalize3d(I);
     
@@ -63,8 +63,8 @@ half_edge test_cylindre(point3d D, point3d A, double R, int precision) {
     printf("N : %f %f %f \n", N -> x, N -> y, N -> z );
 
     //P0 = D+RI //Pk = D + Rcos(kt)I + Rsin(kt)J
-    point3d P = GC_malloc(precision * sizeof (point3d));
-    point3d Q = GC_malloc(precision * sizeof (point3d));
+    point3d P = (point3d) GC_malloc(precision * sizeof (point3d_cell));
+    point3d Q = (point3d) GC_malloc(precision * sizeof (point3d_cell));
     
     //Ici N ne l'est plus si utilisation GG_BOEHM
     printf("N : %f %f %f \n", N -> x, N -> y, N -> z );
@@ -88,8 +88,8 @@ half_edge test_cylindre(point3d D, point3d A, double R, int precision) {
         
     }
 
-    gl_vertex** GP = GC_malloc(precision * sizeof (gl_vertex*));
-    gl_vertex** GQ = GC_malloc(precision * sizeof (gl_vertex*));
+    gl_vertex** GP = (gl_vertex**) GC_malloc(precision * sizeof (gl_vertex*));
+    gl_vertex** GQ = (gl_vertex**) GC_malloc(precision * sizeof (gl_vertex*));
 
     for (k = 0; k < precision; k++) {
         GP[k] = GLvertex3d(P[k].x, P[k].y, P[k].z);
