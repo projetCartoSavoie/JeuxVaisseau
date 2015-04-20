@@ -217,16 +217,28 @@ void iter_vertices_loop(half_edge e1, void fn(half_edge, VERTEX*)) {
             VERTEX* v1 = e1 -> vertex;
             half_edge e2 = e1->next;
             e1 -> visited = current_visit;
-            while (e2 && e2 -> visited != current_visit) {
+            while (e2 && e2 != e1) {
                 e2 -> visited = current_visit;
+                e2 = e2 -> next;
+            }
+            if (e2 != e1) {
+                e2 = e1->prev;
+                while (e2) {
+                    e2 -> visited = current_visit;
+                    e2 = e2 -> prev;
+                }
+            }
+            e2 = e1 -> next;
+            while (e2 && e2 != e1) {
                 iter_vertices_loop(e2->opp, fn);
                 e2 = e2 -> next;
             }
-            e2 = e1->prev;
-            while (e2 && e2 -> visited != current_visit) {
-                e2 -> visited = current_visit;
-                iter_vertices_loop(e2->opp, fn);
-                e2 = e2 -> prev;
+            if (e2 != e1) {
+                e2 = e1->prev;
+                while (e2) {
+                    iter_vertices_loop(e2->opp, fn);
+                    e2 = e2 -> prev;
+                }
             }
             printf("coucou\n");
             fn(e1, v1);

@@ -133,9 +133,9 @@ half_edge test_cylindre(point3d D, point3d A, double R, int precision) {
     close_triangle(epred -> next, e1 -> opp);
 
     int cons_euler = 0;
-    iter_triangles(epred,fnfaces);
-    iter_edges(epred,fnedges);
-    iter_vertices(epred,fnsommets);
+    iter_triangles(e1,fnfaces);
+    iter_edges(e1,fnedges);
+    iter_vertices(e1,fnsommets);
 
     cons_euler = numfaces+numsommets-numedges;
     printf("constante euler : %d + %d - %d = %d \n", numfaces, numsommets, numedges, cons_euler);
