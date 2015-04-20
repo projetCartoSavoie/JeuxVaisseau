@@ -41,22 +41,34 @@
           <executablePath>main.exe</executablePath>
           <cTool>
             <preprocessorList>
-              <Elem>NO_GC</Elem>
+              <Elem>USE_BOEHM</Elem>
             </preprocessorList>
           </cTool>
         </makeTool>
       </makefileType>
       <item path="array.c" ex="false" tool="0" flavor2="0">
+        <cTool flags="0">
+        </cTool>
       </item>
       <item path="geometry.c" ex="false" tool="0" flavor2="0">
+        <cTool flags="0">
+        </cTool>
       </item>
       <item path="main.c" ex="false" tool="0" flavor2="0">
+        <cTool flags="0">
+        </cTool>
       </item>
       <item path="tests.c" ex="false" tool="0" flavor2="0">
+        <cTool flags="0">
+        </cTool>
       </item>
       <item path="triangulation.c" ex="false" tool="0" flavor2="0">
+        <cTool flags="0">
+        </cTool>
       </item>
       <item path="triangulation_tools.c" ex="false" tool="0" flavor2="0">
+        <cTool flags="0">
+        </cTool>
       </item>
     </conf>
   </confs>

@@ -6,6 +6,7 @@
 #include "geometry.h"
 #include "array.h"
 #include "triangulation_tools.h"
+#include "triangulation.h"
 #include "tiny_gc.h"
 #include "tests.h"
 #define FALSE = 0
@@ -28,6 +29,24 @@ void cp_point3d(point3d R, const point3d D) {
     R -> y = D -> y;
     R -> z = D -> z;
 }
+
+unsigned int numfaces = 0;
+unsigned int numsommets = 0;
+unsigned int numedges = 0;
+
+
+void fnfaces(half_edge e, VERTEX* v1, VERTEX* v2, VERTEX* v3) {
+    numfaces++;
+}
+
+void fnsommets(half_edge e, VERTEX* v1) {
+    numsommets++;
+}
+
+void fnedges(half_edge e, VERTEX* v1, VERTEX* v2) {
+    numedges++;
+}
+
 
 half_edge test_cylindre(point3d D, point3d A, double R, int precision) {
 
@@ -110,11 +129,17 @@ half_edge test_cylindre(point3d D, point3d A, double R, int precision) {
     }
 
     //Dernier cas
-    half_edge e2 = create_edge(GQ[precision - 1], GQ[0]);
-    close_triangle(epred, e2);
-    half_edge e3 = create_edge(GP[0],GP[precision -1]);
-    fill_triangle(epred -> next, e1 -> opp, e3);
+    add_vertex_to_edge(epred, GQ[0]);
+    close_triangle(epred -> next, e1 -> opp);
 
+    int cons_euler = 0;
+    iter_triangles(epred,fnfaces);
+    iter_edges(epred,fnedges);
+    iter_vertices(epred,fnsommets);
+
+    cons_euler = numfaces+numsommets-numedges;
+    printf("constante euler : %d + %d - %d = %d \n", numfaces, numsommets, numedges, cons_euler);
+    
     //Rendre le premier half_edge
     return e1 -> opp -> prev;
 }
