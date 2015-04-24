@@ -5,5 +5,8 @@
 #include "array.h"
 
 half_edge test_tetra();
+half_edge test_cylindre(point3d D, point3d A, double R, int precision);
+void testSqueletteDuTube(point3d resultats, int nbPoints, point3d D, point3d A, double R, int precision);
+
 
 #endif

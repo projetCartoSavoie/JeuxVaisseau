@@ -49,7 +49,7 @@ void fnedges(half_edge e, VERTEX* v1, VERTEX* v2) {
 //
 
 half_edge test_cylindre(point3d D, point3d A, double R, int precision) {
-
+    
     //Trouver N
     vecteur3d V = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
     vec3d(V, D, A);
@@ -82,9 +82,6 @@ half_edge test_cylindre(point3d D, point3d A, double R, int precision) {
     point3d P = (point3d) GC_malloc(precision * sizeof (point3d_cell));
     point3d Q = (point3d) GC_malloc(precision * sizeof (point3d_cell));
 
-    //Ici N ne l'est plus si utilisation GG_BOEHM
-    printf("N : %f %f %f \n", V -> x, V -> y, V -> z);
-
     int k;
     double t = 2 * M_PI / precision;
     for (k = 0; k < precision; k++) {
@@ -95,12 +92,14 @@ half_edge test_cylindre(point3d D, point3d A, double R, int precision) {
 
         translate3d(&P[k], R * cos(t * k), I);
         translate3d(&P[k], R * sin(t * k), J);
+        
+        cp_point3d(&Q[k], A);
 
-        cp_point3d(&Q[k], &P[k]);
-        //translate3d(&Q[k], 1.0, N);
-        Q[k].x = Q[k].x + V -> x;
-        Q[k].y = Q[k].y + V -> y;
-        Q[k].z = Q[k].z + V -> z;
+        translate3d(&Q[k], R * cos(t * k), I);
+        translate3d(&Q[k], R * sin(t * k), J);
+
+        /*cp_point3d(&Q[k], &P[k]);
+        translate3d(&Q[k], 1.0, V);*/
 
     }
 
@@ -177,7 +176,7 @@ void testSqueletteDuTube(point3d resultats, int nbPoints, point3d D, point3d A, 
         //Trouver I = N^J
         // I = l'accélération
         vec_prod3d(I, V, J);
-        //normalize3d(I);
+        normalize3d(I);
 
         DeltaI -> x = 2 * (rand() / (double) RAND_MAX) - 1;
         DeltaI -> y = 2 * (rand() / (double) RAND_MAX) - 1;

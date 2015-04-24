@@ -141,20 +141,30 @@ void initGLScene() {
 
     D -> x = 0.0;
     D -> y = 0.0;
-    D-> z = -10.0;
+    D-> z = -5.0;
 
     A -> x = 0.0;
     A -> y = 0.0;
     A -> z = 0.0;
 
-    cylindre_initial = (half_edge) test_cylindre(D, A, R, precision); 
+    cylindre_initial = test_cylindre(D, A, R, precision); 
     testSqueletteDuTube(Pt, 6, D, A, R, precision);
-    cylindre_1 = (half_edge) test_cylindre(A, Pt[0], R, precision);
-    cylindre_2 = (half_edge) test_cylindre(Pt[0], Pt[1], R, precision);
-    cylindre_3 = (half_edge) test_cylindre(Pt[1], Pt[2], R, precision);
-    cylindre_4 = (half_edge) test_cylindre(Pt[2], Pt[3], R, precision);
-    cylindre_5 = (half_edge) test_cylindre(Pt[3], Pt[4], R, precision);
-    cylindre_6 = (half_edge) test_cylindre(Pt[4], Pt[5], R, precision);
+    
+    /*int i;
+    for (i = 0; i < 6; i++) {
+        printf("Pt[%d] = ( %f ; %f ; %f )\n", i, Pt[i].x, Pt[i].y, Pt[i].z);
+    }*/
+    
+    A -> x = 0.0;
+    A -> y = 0.0;
+    A -> z = 0.0;
+    
+    cylindre_1 = test_cylindre(A, &Pt[0], R, precision);
+    cylindre_2 = test_cylindre(&Pt[0], &Pt[1], R, precision);
+    cylindre_3 = test_cylindre(&Pt[1], &Pt[2], R, precision);
+    cylindre_4 = test_cylindre(&Pt[2], &Pt[3], R, precision);
+    cylindre_5 = test_cylindre(&Pt[3], &Pt[4], R, precision);
+    cylindre_6 = test_cylindre(&Pt[4], &Pt[5], R, precision);
 
     if (cylindre_initial) {
         gl_cylindre_initial = triangulation_poly_to_gl_object(cylindre_initial);
@@ -210,7 +220,7 @@ int drawGLScene(GLvoid) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glLoadIdentity();
-    glTranslatef(0.0f, 0.0f, -14.0f);
+    glTranslatef(0.0f, 0.0f, -50.0f);
     glRotatef(rtri, 0.0f, 1.0f, 1.0f);
 
 
