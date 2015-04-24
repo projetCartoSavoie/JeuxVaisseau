@@ -30,6 +30,7 @@ void cp_point3d(point3d R, const point3d D) {
     R -> z = D -> z;
 }
 
+//Pour faire la constante d'Euler à la fin
 unsigned int numfaces = 0;
 unsigned int numsommets = 0;
 unsigned int numedges = 0;
@@ -46,7 +47,7 @@ void fnsommets(half_edge e, VERTEX* v1) {
 void fnedges(half_edge e, VERTEX* v1, VERTEX* v2) {
     numedges++;
 }
-
+//
 
 half_edge test_cylindre(point3d D, point3d A, double R, int precision) {
 
@@ -132,6 +133,7 @@ half_edge test_cylindre(point3d D, point3d A, double R, int precision) {
     add_vertex_to_edge(epred, GQ[0]);
     close_triangle(epred -> next, e1 -> opp);
 
+    //Vérification
     int cons_euler = 0;
     iter_triangles(e1,fnfaces);
     iter_edges(e1,fnedges);
