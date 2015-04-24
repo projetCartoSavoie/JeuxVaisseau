@@ -155,10 +155,6 @@ void initGLScene() {
         printf("Pt[%d] = ( %f ; %f ; %f )\n", i, Pt[i].x, Pt[i].y, Pt[i].z);
     }*/
     
-    A -> x = 0.0;
-    A -> y = 0.0;
-    A -> z = 0.0;
-    
     cylindre_1 = test_cylindre(A, &Pt[0], R, precision);
     cylindre_2 = test_cylindre(&Pt[0], &Pt[1], R, precision);
     cylindre_3 = test_cylindre(&Pt[1], &Pt[2], R, precision);
