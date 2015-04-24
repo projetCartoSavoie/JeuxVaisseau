@@ -240,7 +240,7 @@ void iter_vertices_loop(half_edge e1, void fn(half_edge, VERTEX*)) {
                     e2 = e2 -> prev;
                 }
             }
-            printf("coucou\n");
+            
             fn(e1, v1);
             iter_vertices_loop(e1->opp, fn);
         } else iter_vertices_loop(e1->opp, fn);

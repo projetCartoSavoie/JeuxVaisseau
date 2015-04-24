@@ -35,7 +35,6 @@ unsigned int numfaces = 0;
 unsigned int numsommets = 0;
 unsigned int numedges = 0;
 
-
 void fnfaces(half_edge e, VERTEX* v1, VERTEX* v2, VERTEX* v3) {
     numfaces++;
 }
@@ -52,60 +51,57 @@ void fnedges(half_edge e, VERTEX* v1, VERTEX* v2) {
 half_edge test_cylindre(point3d D, point3d A, double R, int precision) {
 
     //Trouver N
-    vecteur3d N = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
-    vec3d(N, D, A);
+    vecteur3d V = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
+    vec3d(V, D, A);
 
-    assert(!(N -> x == 0 && N -> y == 0 && N -> z == 0));
+    assert(!(V -> x == 0 && V -> y == 0 && V -> z == 0));
 
     //Trouver J
     vecteur3d J = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
-    if (abs(N -> z) < abs(N -> x) && abs(N -> z) < abs(N -> y)) {
-        J -> x = N -> y;
-        J -> y = -(N -> x);
+    if (abs(V -> z) < abs(V -> x) && abs(V -> z) < abs(V -> y)) {
+        J -> x = V -> y;
+        J -> y = -(V -> x);
         J -> z = 0;
-    } else if (abs(N -> x) < abs(N -> y)) {
+    } else if (abs(V -> x) < abs(V -> y)) {
         J -> x = 0;
-        J -> y = N -> z;
-        J -> z = -(N -> y);
+        J -> y = V -> z;
+        J -> z = -(V -> y);
     } else {
-        J -> x = N -> z;
+        J -> x = V -> z;
         J -> y = 0;
-        J -> z = -(N -> x);
+        J -> z = -(V -> x);
     }
     normalize3d(J);
 
     //Trouver I = N^J
     vecteur3d I = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
-    vec_prod3d(I, N, J);
+    vec_prod3d(I, V, J);
     normalize3d(I);
-    
-    //Ici N est encore défini
-    printf("N : %f %f %f \n", N -> x, N -> y, N -> z );
 
     //P0 = D+RI //Pk = D + Rcos(kt)I + Rsin(kt)J
     point3d P = (point3d) GC_malloc(precision * sizeof (point3d_cell));
     point3d Q = (point3d) GC_malloc(precision * sizeof (point3d_cell));
-    
+
     //Ici N ne l'est plus si utilisation GG_BOEHM
-    printf("N : %f %f %f \n", N -> x, N -> y, N -> z );
+    printf("N : %f %f %f \n", V -> x, V -> y, V -> z);
 
     int k;
     double t = 2 * M_PI / precision;
     for (k = 0; k < precision; k++) {
-        
+
         //P[k] = D + R*cos(t*k)I + R*sin(t*k)J
         //Qk = Translate Pk de vecteur DA
         cp_point3d(&P[k], D);
-        
+
         translate3d(&P[k], R * cos(t * k), I);
         translate3d(&P[k], R * sin(t * k), J);
-        
+
         cp_point3d(&Q[k], &P[k]);
         //translate3d(&Q[k], 1.0, N);
-        Q[k].x = Q[k].x + N -> x;
-        Q[k].y = Q[k].y + N -> y;
-        Q[k].z = Q[k].z + N -> z;
-        
+        Q[k].x = Q[k].x + V -> x;
+        Q[k].y = Q[k].y + V -> y;
+        Q[k].z = Q[k].z + V -> z;
+
     }
 
     gl_vertex** GP = (gl_vertex**) GC_malloc(precision * sizeof (gl_vertex*));
@@ -135,13 +131,71 @@ half_edge test_cylindre(point3d D, point3d A, double R, int precision) {
 
     //Vérification
     int cons_euler = 0;
-    iter_triangles(e1,fnfaces);
-    iter_edges(e1,fnedges);
-    iter_vertices(e1,fnsommets);
+    iter_triangles(e1, fnfaces);
+    iter_edges(e1, fnedges);
+    iter_vertices(e1, fnsommets);
 
-    cons_euler = numfaces+numsommets-numedges;
+    cons_euler = numfaces + numsommets - numedges;
     printf("constante euler : %d + %d - %d = %d \n", numfaces, numsommets, numedges, cons_euler);
-    
+
     //Rendre le premier half_edge
     return e1 -> opp -> prev;
+}
+
+void testSqueletteDuTube(point3d resultats, int nbPoints, point3d D, point3d A, double R, int precision) {
+
+    
+    //Trouver N
+    vecteur3d V = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
+    vecteur3d J = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
+    vecteur3d I = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
+    vecteur3d DeltaI = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
+    vec3d(V, D, A);
+
+    assert(!(V -> x == 0 && V -> y == 0 && V -> z == 0));
+
+    int i = 0;
+
+    for (i = 0; i < (nbPoints/2); i++) {
+
+        //Trouver J
+        if (abs(V -> z) < abs(V -> x) && abs(V -> z) < abs(V -> y)) {
+            J -> x = V -> y;
+            J -> y = -(V -> x);
+            J -> z = 0;
+        } else if (abs(V -> x) < abs(V -> y)) {
+            J -> x = 0;
+            J -> y = V -> z;
+            J -> z = -(V -> y);
+        } else {
+            J -> x = V -> z;
+            J -> y = 0;
+            J -> z = -(V -> x);
+        }
+        //normalize3d(J);
+
+        //Trouver I = N^J
+        // I = l'accélération
+        vec_prod3d(I, V, J);
+        //normalize3d(I);
+
+        DeltaI -> x = 2 * (rand() / (double) RAND_MAX) - 1;
+        DeltaI -> y = 2 * (rand() / (double) RAND_MAX) - 1;
+        DeltaI -> z = 2 * (rand() / (double) RAND_MAX) - 1;
+        while (norm3d(DeltaI) < 0.001 || norm3d(DeltaI) > 1) {
+            DeltaI -> x = 2 * (rand() / (double) RAND_MAX) - 1;
+            DeltaI -> y = 2 * (rand() / (double) RAND_MAX) - 1;
+            DeltaI -> z = 2 * (rand() / (double) RAND_MAX) - 1;
+        }
+
+        add3d(I, DeltaI);
+        add3d(V, I);
+        
+        translate3d(A,1,V);  
+        cp_point3d(&resultats[2*i],A);
+        translate3d(A,1,V);
+        cp_point3d(&resultats[2*i + 1],A);
+        
+    }
+
 }

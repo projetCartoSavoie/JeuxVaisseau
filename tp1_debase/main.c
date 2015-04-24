@@ -115,12 +115,27 @@ int initGL(GLvoid) {
 
 /* variable globale de la scène */
 
-half_edge tetra = NULL;
-gl_object *gl_tetra = NULL;
+half_edge cylindre_initial = NULL;
+half_edge cylindre_1 = NULL;
+half_edge cylindre_2 = NULL;
+half_edge cylindre_3 = NULL;
+half_edge cylindre_4 = NULL;
+half_edge cylindre_5 = NULL;
+half_edge cylindre_6 = NULL;
+
+gl_object *gl_cylindre_initial = NULL;
+gl_object *gl_cylindre_1 = NULL;
+gl_object *gl_cylindre_2 = NULL;
+gl_object *gl_cylindre_3 = NULL;
+gl_object *gl_cylindre_4 = NULL;
+gl_object *gl_cylindre_5 = NULL;
+gl_object *gl_cylindre_6 = NULL;
 
 void initGLScene() {
     point3d_cell D[1];
     point3d_cell A[1];
+    point3d_cell Pt[6];
+    
     double R = 3.0;
     int precision = 10;
 
@@ -132,10 +147,23 @@ void initGLScene() {
     A -> y = 0.0;
     A -> z = 0.0;
 
-    tetra = test_cylindre(D, A, R, precision); 
+    cylindre_initial = (half_edge) test_cylindre(D, A, R, precision); 
+    testSqueletteDuTube(Pt, 6, D, A, R, precision);
+    cylindre_1 = (half_edge) test_cylindre(A, Pt[0], R, precision);
+    cylindre_2 = (half_edge) test_cylindre(Pt[0], Pt[1], R, precision);
+    cylindre_3 = (half_edge) test_cylindre(Pt[1], Pt[2], R, precision);
+    cylindre_4 = (half_edge) test_cylindre(Pt[2], Pt[3], R, precision);
+    cylindre_5 = (half_edge) test_cylindre(Pt[3], Pt[4], R, precision);
+    cylindre_6 = (half_edge) test_cylindre(Pt[4], Pt[5], R, precision);
 
-    if (tetra) {
-        gl_tetra = triangulation_poly_to_gl_object(tetra);
+    if (cylindre_initial) {
+        gl_cylindre_initial = triangulation_poly_to_gl_object(cylindre_initial);
+        gl_cylindre_1 = triangulation_poly_to_gl_object(cylindre_1);
+        gl_cylindre_2 = triangulation_poly_to_gl_object(cylindre_2);
+        gl_cylindre_3 = triangulation_poly_to_gl_object(cylindre_3);
+        gl_cylindre_4 = triangulation_poly_to_gl_object(cylindre_4);
+        gl_cylindre_5 = triangulation_poly_to_gl_object(cylindre_5);
+        gl_cylindre_6 = triangulation_poly_to_gl_object(cylindre_6);
     }
 }
 
@@ -186,9 +214,15 @@ int drawGLScene(GLvoid) {
     glRotatef(rtri, 0.0f, 1.0f, 1.0f);
 
 
-    if (gl_tetra) {
+    if (gl_cylindre_initial) {
         glColor3f(0.7f, 0.2f, 0.2f);
-        glDrawObject(gl_tetra);
+        glDrawObject(gl_cylindre_initial);
+        glDrawObject(gl_cylindre_1);
+        glDrawObject(gl_cylindre_2);
+        glDrawObject(gl_cylindre_3);
+        glDrawObject(gl_cylindre_4);
+        glDrawObject(gl_cylindre_5);
+        glDrawObject(gl_cylindre_6);
     }
 
     /* Draw it to the screen */
@@ -229,8 +263,20 @@ void handleKeyPress(SDL_Keysym *keysym) {
 
 int main(int argc, char **argv) {
     GC_init(&argc, 0x1000000, 0x1000);
-    GC_register_global(&gl_tetra);
-    GC_register_global(&tetra);
+    GC_register_global(&gl_cylindre_initial);
+    GC_register_global(&cylindre_initial);
+    GC_register_global(&gl_cylindre_1);
+    GC_register_global(&cylindre_1);
+    GC_register_global(&gl_cylindre_2);
+    GC_register_global(&cylindre_2);
+    GC_register_global(&gl_cylindre_3);
+    GC_register_global(&cylindre_3);
+    GC_register_global(&gl_cylindre_4);
+    GC_register_global(&cylindre_4);
+    GC_register_global(&gl_cylindre_5);
+    GC_register_global(&cylindre_5);
+    GC_register_global(&gl_cylindre_6);
+    GC_register_global(&cylindre_6);
 
     init_count_frames();
 
