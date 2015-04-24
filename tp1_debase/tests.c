@@ -172,42 +172,29 @@ half_edge raccorder(half_edge ne1, point3d D, point3d A, double R, int precision
     normalize3d(I);
 
     //P0 = D+RI //Pk = D + Rcos(kt)I + Rsin(kt)J
-    point3d P = (point3d) GC_malloc(precision * sizeof (point3d_cell));
     point3d Q = (point3d) GC_malloc(precision * sizeof (point3d_cell));
 
     int k;
     double t = 2 * M_PI / precision;
     for (k = 0; k < precision; k++) {
-
-        //P[k] = D + R*cos(t*k)I + R*sin(t*k)J
-        //Qk = Translate Pk de vecteur DA
-        cp_point3d(&P[k], D);
-
-        translate3d(&P[k], R * cos(t * k), I);
-        translate3d(&P[k], R * sin(t * k), J);
         
         cp_point3d(&Q[k], A);
 
         translate3d(&Q[k], R * cos(t * k), I);
         translate3d(&Q[k], R * sin(t * k), J);
 
-        /*cp_point3d(&Q[k], &P[k]);
-        translate3d(&Q[k], 1.0, V);*/
-
     }
 
-    gl_vertex** GP = (gl_vertex**) GC_malloc(precision * sizeof (gl_vertex*));
     gl_vertex** GQ = (gl_vertex**) GC_malloc(precision * sizeof (gl_vertex*));
 
     for (k = 0; k < precision; k++) {
-        GP[k] = GLvertex3d(P[k].x, P[k].y, P[k].z);
         GQ[k] = GLvertex3d(Q[k].x, Q[k].y, Q[k].z);
     }
 
     //Triangles PkQkQ(k+1) et PkQ(k+1)P(k+1)
     //Premier cas (OK)
     half_edge e1 = create_triangle(GP[0], GQ[0], GQ[1]);
-    add_vertex_to_edge(e1 -> next, GP[1]);
+    add_vertex_to_edge(ne1, GP[1]);
     half_edge epred = e1 -> next -> next -> opp -> next;
 
     //Boucle (pas ok : un seul triangle)
