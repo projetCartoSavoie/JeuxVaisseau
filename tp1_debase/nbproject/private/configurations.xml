@@ -8,6 +8,8 @@
       <in>geometry.c</in>
       <in>geometry.h</in>
       <in>main.c</in>
+      <in>old_main.c</in>
+      <in>old_tests.c</in>
       <in>testBezier.c</in>
       <in>tests.c</in>
       <in>tests.h</in>
