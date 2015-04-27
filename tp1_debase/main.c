@@ -190,6 +190,7 @@ int drawGLScene(GLvoid) {
 
     if (gl_cylindre_initial) {
         glColor3f(0.7f, 0.2f, 0.2f);
+        glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
         glDrawObject(gl_cylindre_initial);
     }
 

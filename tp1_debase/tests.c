@@ -91,7 +91,9 @@ void creerRepere(repere Res0, repere Res1, const repere R) {
     cp_vecteur3d(newV, R -> V);
     add3d(newV, newI);
     
-    vec_prod3d(newJ, newV, newI);
+    vec_prod3d(newJ, newI, newV);
+    normalize3d(newJ);
+    normalize3d(newI);
     
     cp_point3d(newCentre0, R -> C);
     translate3d(newCentre0, 1, newV);
@@ -150,7 +152,7 @@ half_edge raccorderDebut(gl_vertex** GP, gl_vertex** GQ, int precision) {
     close_triangle(epred -> next, e1 -> opp);
 
     //Vérification
-    int cons_euler = 0;
+    int cons_euler = 0; numfaces = 0; numedges = 0; numsommets = 0;
     iter_triangles(e1, fnfaces);
     iter_edges(e1, fnedges);
     iter_vertices(e1, fnsommets);
@@ -164,13 +166,12 @@ half_edge raccorderDebut(gl_vertex** GP, gl_vertex** GQ, int precision) {
 
 half_edge raccorder(half_edge e, gl_vertex** GQ, int precision) {
     
+    printf("raccorder\n");
     half_edge epred, e2;
-    assert(e->prev == NULL);
-    assert(e->opp->next == NULL);
     add_vertex_to_edge(e->opp,GQ[1]);
-    /*add_vertex_to_edge(e->prev->opp,GQ[0]);*/
+    add_vertex_to_edge(e->prev->opp,GQ[0]);
     
-    /*epred = e -> opp -> next;
+    epred = e -> opp -> next;
     int k;
     for (k = 1; k < precision - 1; k++) {
         add_vertex_to_edge(epred, GQ[k + 1]);
@@ -179,19 +180,36 @@ half_edge raccorder(half_edge e, gl_vertex** GQ, int precision) {
             e2 = e2 -> prev;
         }
         close_triangle(e2 -> opp, epred -> next);
-    }*/
+        epred = epred -> next -> next -> opp -> next;
+    }
     
-    return e;
-    /*return e->prev->prev->opp->prev;*/
+    add_vertex_to_edge(epred, GQ[0]);
+    e2 = e -> next;
+    while(e2 -> next != NULL) {
+        e2 = e2 -> next;
+    }
+    fill_triangle(epred -> next, e -> prev -> prev -> opp, e2);
+    
+    //Vérification
+    int cons_euler = 0; numfaces = 0; numedges = 0; numsommets = 0;
+    iter_triangles(e, fnfaces);
+    iter_edges(e, fnedges);
+    iter_vertices(e, fnsommets);
+
+    cons_euler = numfaces + numsommets - numedges;
+    printf("constante euler : %d + %d - %d = %d \n", numfaces, numsommets, numedges, cons_euler);
+    
+    /*return e;*/
+    return e->prev->prev->opp->prev;
 }
 
 
 half_edge testTubeEntier(int nbPoints, const point3d D, const point3d A, double R, int precision) {
 
     assert(nbPoints >= 2);
-half_edge test_tetra();
-half_edge test_cylindre(point3d D, point3d A, double R, int precision);
-void testSqueletteDuTube(point3d resultats, int nbPoints, const point3d D , const point3d A , double R, int precision);
+    half_edge test_tetra();
+    half_edge test_cylindre(point3d D, point3d A, double R, int precision);
+    void testSqueletteDuTube(point3d resultats, int nbPoints, const point3d D , const point3d A , double R, int precision);
     //Chercher les repères
     repere Rep = (repere) GC_malloc(nbPoints * sizeof (repere_cell));
 
@@ -250,13 +268,12 @@ void testSqueletteDuTube(point3d resultats, int nbPoints, const point3d D , cons
         creerPointsAutour(&Rep[i], R, precision);
     }
     
+    //Raccorder (différent au premier tour)
     half_edge e = raccorderDebut(Rep[0].PointsAutour, Rep[1].PointsAutour, precision );
     
     for (i = 1; i < nbPoints - 1; i++) {
         e = raccorder(e, Rep[i+1].PointsAutour, precision);
     }
-    
-    //Raccorder (différent au premier tour)
     
     return e;
 
