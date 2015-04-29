@@ -63,7 +63,7 @@ void fnedges(half_edge e, VERTEX* v1, VERTEX* v2) {
     numedges++;
 }
 
-void creerRepere(repere Res0, repere Res1, const repere R) {
+void creerRepere(repere Res0, repere Res1, const repere R, double rayon) {
 
     vecteur3d newV = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
     vecteur3d newJ = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
@@ -76,13 +76,15 @@ void creerRepere(repere Res0, repere Res1, const repere R) {
 
     assert(!(R -> V -> x == 0 && R -> V -> y == 0 && R -> V -> z == 0));
 
-    DeltaI -> x = 2 * (rand() / (double) RAND_MAX) - 1;
-    DeltaI -> y = 2 * (rand() / (double) RAND_MAX) - 1;
-    DeltaI -> z = 2 * (rand() / (double) RAND_MAX) - 1;
-    while (norm3d(DeltaI) < 0.001 || norm3d(DeltaI) > 1) {
-        DeltaI -> x = 2 * (rand() / (double) RAND_MAX) - 1;
-        DeltaI -> y = 2 * (rand() / (double) RAND_MAX) - 1;
-        DeltaI -> z = 2 * (rand() / (double) RAND_MAX) - 1;
+    double maxiDelta = rayon / 100;
+    DeltaI -> x = 2 * maxiDelta * (rand() / (double) RAND_MAX) - maxiDelta;
+    DeltaI -> y = 2 * maxiDelta * (rand() / (double) RAND_MAX) - maxiDelta;
+    DeltaI -> z = 2 * maxiDelta * (rand() / (double) RAND_MAX) - maxiDelta;
+    while (norm3d(DeltaI) < 0.0001 || norm3d(DeltaI) > maxiDelta) {
+        printf("mauvais delta");
+        DeltaI -> x = 2 * maxiDelta * (rand() / (double) RAND_MAX) - maxiDelta;
+        DeltaI -> y = 2 * maxiDelta * (rand() / (double) RAND_MAX) - maxiDelta;
+        DeltaI -> z = 2 * maxiDelta * (rand() / (double) RAND_MAX) - maxiDelta;
     }
     
     cp_vecteur3d(newI, R -> I);
@@ -254,7 +256,7 @@ half_edge testTubeEntier(int nbPoints, const point3d D, const point3d A, double 
     //Les suivants
     int i;
     for (i = 1; i < (nbPoints / 2); i++) {
-        creerRepere(&Rep[2 * i], &Rep[2 * i + 1], &Rep[2 * i - 1]);
+        creerRepere(&Rep[2 * i], &Rep[2 * i + 1], &Rep[2 * i - 1], R);
     }
     
     for (i = 0; i < nbPoints; i++) {

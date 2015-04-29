@@ -134,7 +134,7 @@ void initGLScene() {
     A -> z = 0.0;
 
     
-    cylindre_initial = testTubeEntier(6, D, A, R, precision);
+    cylindre_initial = testTubeEntier(50, D, A, R, precision);
 
     if (cylindre_initial) {
         gl_cylindre_initial = triangulation_poly_to_gl_object(cylindre_initial);
@@ -184,7 +184,7 @@ int drawGLScene(GLvoid) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glLoadIdentity();
-    glTranslatef(0.0f, 0.0f, -50.0f);
+    glTranslatef(0.0f, -10.0f, -50.0f);
     glRotatef(rtri, 0.0f, 1.0f, 1.0f);
 
 
