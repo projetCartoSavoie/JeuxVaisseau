@@ -36,7 +36,7 @@ SDL_GLContext glcontext;
 SDL_WindowFlags fullScreenValue[FULLSCREENNB] = {0, SDL_WINDOW_FULLSCREEN, SDL_WINDOW_FULLSCREEN_DESKTOP};
 int currentFullscreen = 0;
 int currentView = SCENE_ENTIERE;
-int currentStep = 1;
+int currentStep = 20;
 
 /* fonction pour quitter */
 void Quit(int returnCode) {
@@ -228,19 +228,29 @@ int drawMyScene(GLvoid) {
     point3d Eye = (point3d) GC_malloc(sizeof (point3d_cell));
     point3d Cible = (point3d) GC_malloc(sizeof (point3d_cell));
     vecteur3d Up = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
-    vecteur3d ViewDir = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
+    //vecteur3d ViewDir = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
 
-    cp_point3d(Eye, Rep[currentStep].C);
-    cp_point3d(Cible, Rep[currentStep + 1].C);
+    int k = currentStep / 20;
+    int bigT = currentStep % 20;
+    double t = ((double) bigT)/20;
+    printf("k = %d ; bigT = %d\n", k, bigT); 
+    
+    //cp_point3d(Eye, Rep[currentStep].C);
+    bary3d3points(Eye, (1-t)*(1-t), Rep[k].C, 2*t*(1-t), Rep[k + 1].C, t*t, Rep[k+2].C);  
+    //cp_point3d(Cible, Rep[currentStep + 1].C);
+    bary3d3points(Cible, (1-t)*(1-t), Rep[k+1].C, 2*t*(1-t), Rep[k + 2].C, t*t, Rep[k+3].C);  
 
-    vec3d(ViewDir, Eye, Cible);
-    //translate3d(Cible, 2.0, ViewDir);
+    //cp_vecteur3d(Up, Rep[currentStep].I);
+    moyenne3d3vecteurs(Up, (1-t)*(1-t), Rep[k].I, 2*t*(1-t), Rep[k + 1].I, t*t, Rep[k+2].I);
+    
+    //translate3d(Eye, -0.3, Up);
 
-    cp_point3d(Eye, Rep[currentStep].C);
-    //translate3d(Eye, -0.3, Rep[currentStep].I);
-
-    cp_vecteur3d(Up, Rep[currentStep].I);
-
+    printf("Eye = (%f %f %f) ;; Cible = (%f %f %f) ;; Up = (%f %f %f) \n",
+            Eye->x, Eye->y, Eye->z,
+            Cible->x, Cible->y, Cible->z,
+            Up->x, Up->y, Up->z
+            );
+    
     gluLookAt(
             (float) (Eye->x), (float) (Eye->y), (float) (Eye->z),
             (float) (Cible->x), (float) (Cible->y), (float) (Cible->z),
@@ -266,8 +276,14 @@ int drawMyScene(GLvoid) {
 void handleKeyPress(SDL_Keysym *keysym) {
     switch (keysym->sym) {
         case SDLK_UP:
-            if(currentStep < nbPoints - 2) {
+            if (currentStep < (nbPoints-4)*20) {
                 currentStep++;
+                drawMyScene();
+            }
+            break;
+        case SDLK_DOWN:
+            if (currentStep > 0) {
+                currentStep--;
                 drawMyScene();
             }
             break;

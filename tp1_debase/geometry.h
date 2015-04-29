@@ -95,8 +95,10 @@ void translate3f(point3f A, double u, const vecteur3f V);
 void translate2d(point2d A, double u, const vecteur2d V);
 void translate2f(point2f A, double u, const vecteur2f V);
 
-/* Barycentre de deux points */
+/* Barycentre de deux ou trois points */
 void bary3d(point3d R, double u, point3d A, double v, const point3d B);
+void bary3d3points(point3d R, double u, point3d A, double v, const point3d B, double w, const point3d C);
+void moyenne3d3vecteurs(vecteur3d R, double u, vecteur3d A, double v, const vecteur3d B, double w, const vecteur3d C);
 void bary3f(point3f R, double u, point3f A, double v, const point3f B);
 void bary2d(point2d R, double u, point2d A, double v, const point2d B);
 void bary2f(point2f R, double u, point2f A, double v, const point2f B);

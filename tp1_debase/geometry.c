@@ -60,6 +60,19 @@ void bary3d(point3d R, double u, point3d A, double v, const point3d B) {
   R->y = u * A->y + v * B -> y;
   R->z = u * A->z + v * B -> z;
 }
+
+void bary3d3points(point3d R, double u, point3d A, double v, const point3d B, double w, const point3d C) {
+  R->x = u * A->x + v * B -> x + w * C -> x;
+  R->y = u * A->y + v * B -> y + w * C -> y;
+  R->z = u * A->z + v * B -> z + w * C -> z;
+}
+
+void moyenne3d3vecteurs(vecteur3d R, double u, vecteur3d A, double v, const vecteur3d B, double w, const vecteur3d C) {
+  R->x = u * A->x + v * B -> x + w * C -> x;
+  R->y = u * A->y + v * B -> y + w * C -> y;
+  R->z = u * A->z + v * B -> z + w * C -> z;
+}
+
 void bary3f(point3f R, double u, point3f A, double v, const point3f B) {
   R->x = u * A->x + v * B -> x;
   R->y = u * A->y + v * B -> y;
