@@ -102,7 +102,7 @@ int initGL(GLvoid) {
 
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-    glDisable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
 
     /* Really Nice Perspective Calculations */
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
@@ -120,14 +120,13 @@ gl_object *gl_cylindre_initial = NULL;
 void initGLScene() {
     point3d_cell D[1];
     point3d_cell A[1];
-    /*point3d_cell Pt[6];*/
     
-    double R = 5.0;
-    int precision = 10;
+    double R = 3.0;
+    int precision = 20;
 
     D -> x = 0.0;
     D -> y = 0.0;
-    D-> z = -5.0;
+    D-> z = -3.0;
 
     A -> x = 0.0;
     A -> y = 0.0;
@@ -184,13 +183,13 @@ int drawGLScene(GLvoid) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glLoadIdentity();
-    glTranslatef(0.0f, 0.0f, -100.0f);
+    glTranslatef(0.0f, -10.0f, -80.0f);
     glRotatef(rtri, 0.0f, 1.0f, 1.0f);
 
 
     if (gl_cylindre_initial) {
         glColor3f(0.7f, 0.2f, 0.2f);
-        glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+        //glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
         glDrawObject(gl_cylindre_initial);
     }
 

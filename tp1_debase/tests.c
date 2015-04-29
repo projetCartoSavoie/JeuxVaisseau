@@ -63,6 +63,70 @@ void fnedges(half_edge e, VERTEX* v1, VERTEX* v2) {
     numedges++;
 }
 
+void creerRepere(repere Res0, repere Res1, const repere R, double rayon, vecteur3d A) {
+
+    vecteur3d newV = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
+    vecteur3d newJ = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
+    vecteur3d newI = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
+    vecteur3d DeltaA = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
+    
+    point3d newCentre0 = (point3d) GC_malloc(sizeof (point3d_cell));
+    point3d newCentre1 = (point3d) GC_malloc(sizeof (point3d_cell));
+
+
+    assert(!(R -> V -> x == 0 && R -> V -> y == 0 && R -> V -> z == 0));
+
+    double maxiDelta = rayon / 2;
+    DeltaA -> x = 2 * maxiDelta * (rand() / (double) RAND_MAX) - maxiDelta;
+    DeltaA -> y = 2 * maxiDelta * (rand() / (double) RAND_MAX) - maxiDelta;
+    DeltaA -> z = 2 * maxiDelta * (rand() / (double) RAND_MAX) - maxiDelta;
+    while (norm3d(DeltaA) < 0.0001 || norm3d(DeltaA) > maxiDelta) {
+        DeltaA -> x = 2 * maxiDelta * (rand() / (double) RAND_MAX) - maxiDelta;
+        DeltaA -> y = 2 * maxiDelta * (rand() / (double) RAND_MAX) - maxiDelta;
+        DeltaA -> z = 2 * maxiDelta * (rand() / (double) RAND_MAX) - maxiDelta;
+    }
+    
+    //a' = a + DeltaA
+    add3d(A, DeltaA);
+    
+    //v' = v + a'
+    cp_vecteur3d(newV,R -> V);
+    add3d(newV,A);
+    
+    //i' = j^v'
+    vec_prod3d(newI, R -> J, newV);
+    
+    //j' = v'^i'
+    vec_prod3d(newJ, newV, newI);
+    
+    //i' = j'^v'
+    vec_prod3d(newI, newJ, newV);
+    
+    //normalisation
+    normalize3d(newI);
+    normalize3d(newJ);
+    normalize3d(newV);
+    scal_prod3d(newV, rayon);
+    
+    //centres
+    cp_point3d(newCentre0, R -> C);
+    translate3d(newCentre0, 1, newV);
+    
+    cp_point3d(newCentre1, newCentre0);
+    translate3d(newCentre1, 1, newV);
+    
+    Res0 -> C = newCentre0;
+    Res0 -> I = newI;
+    Res0 -> J = newJ;
+    Res0 -> V = newV;
+    
+    Res1 -> C = newCentre1;
+    Res1 -> I = newI;
+    Res1 -> J = newJ;
+    Res1 -> V = newV;
+}
+
+/*
 void creerRepere(repere Res0, repere Res1, const repere R, double rayon) {
 
     vecteur3d newV = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
@@ -115,7 +179,7 @@ void creerRepere(repere Res0, repere Res1, const repere R, double rayon) {
     Res1 -> I = newJ;
     Res1 -> J = newI;
     Res1 -> V = newV;
-}
+}*/
 
 void creerPointsAutour(repere Rep, double R, int precision) {
     Rep -> PointsAutour = (gl_vertex**) GC_malloc(precision * sizeof (gl_vertex*));
@@ -223,6 +287,7 @@ half_edge testTubeEntier(int nbPoints, const point3d D, const point3d A, double 
     vecteur3d V = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
     vecteur3d I = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
     vecteur3d J = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
+    vecteur3d Acc = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
 
     vec3d(V, D, A);
 
@@ -256,10 +321,13 @@ half_edge testTubeEntier(int nbPoints, const point3d D, const point3d A, double 
     Rep[1].J = I;
     Rep[1].V = V;
 
+    cp_vecteur3d(Acc, V);
+    scal_prod3d(Acc, 0.5);
+    
     //Les suivants
     int i;
     for (i = 1; i < (nbPoints / 2); i++) {
-        creerRepere(&Rep[2 * i], &Rep[2 * i + 1], &Rep[2 * i - 1], R);
+        creerRepere(&Rep[2 * i], &Rep[2 * i + 1], &Rep[2 * i - 1], R, Acc);
     }
     
     for (i = 0; i < nbPoints; i++) {
@@ -269,7 +337,6 @@ half_edge testTubeEntier(int nbPoints, const point3d D, const point3d A, double 
         assert(dot_prod3d(Rep[i].J,Rep[i].V) < 0.1);
         assert(dot_prod3d(Rep[i].I,Rep[i].V) < 0.1);*/
     }
-    
     
     for (i = 0; i < nbPoints; i++) {
         printf("Point %d : centre (%f , %f , %f) V = (%f , %f , %f) I = (%f , %f , %f) J = (%f , %f , %f) \n",
