@@ -20,6 +20,8 @@
 #include "array.h"
 #include "triangulation_tools.h"
 #include "tests.h"
+#define SCENE_ENTIERE 0
+#define DANS_LE_TUBE 1
 
 /* La "window SDL", c'est à dire la fenêtre où l'on dessine
  * obligatoirement une variable globale, car les "callbacks"
@@ -58,7 +60,7 @@ int resizeWindow(int width, int height) {
     glLoadIdentity();
 
     /* Set our perspective */
-    gluPerspective(45.0f, ratio, 0.1f, 100.0f);
+    gluPerspective(45.0f, ratio, 0.1f, 500.0f);
 
     /* Make sure we're chaning the model view and not the projection */
     glMatrixMode(GL_MODELVIEW);
@@ -183,9 +185,9 @@ int drawGLScene(GLvoid) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glLoadIdentity();
-    glTranslatef(0.0f, -10.0f, -80.0f);
+    glTranslatef(0.0f, -5.0f, -250.0f);
     glRotatef(rtri, 0.0f, 1.0f, 1.0f);
-
+	//glRotatef(50.0f, 1.0f, 1.0f, 1.0f);
 
     if (gl_cylindre_initial) {
         glColor3f(0.7f, 0.2f, 0.2f);
@@ -200,16 +202,50 @@ int drawGLScene(GLvoid) {
 
     rtri += 45.0f * (float) delta;
 
-    return ( 1);
+    return (1);
+}
+
+/* La fonction qui dessine la scène */
+int drawMyScene(GLvoid) {
+
+    /* Clear The Screen And The Depth Buffer */
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glLoadIdentity();
+    glTranslatef(0.0f, 0.0f, 0.0f);
+	gluLookAt(0.0f,0.0f,0.0f,0.0f,0.0f,3.0f,0.0f,0.1f,0.0f);
+	
+    if (gl_cylindre_initial) {
+        glColor3f(0.7f, 0.2f, 0.2f);
+        //glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+        glDrawObject(gl_cylindre_initial);
+    }
+	
+	
+	
+    /* Draw it to the screen */
+    SDL_GL_SwapWindow(window);
+
+    /* Increase The Rotation Variable For The Triangle */
+
+    return (1);
 }
 
 #define FULLSCREENNB 3
 SDL_WindowFlags fullScreenValue[FULLSCREENNB] = {0, SDL_WINDOW_FULLSCREEN, SDL_WINDOW_FULLSCREEN_DESKTOP};
 int currentFullscreen = 0;
-
+int currentView = SCENE_ENTIERE;
 /* fonstion de gestion du clavier */
 void handleKeyPress(SDL_Keysym *keysym) {
     switch (keysym->sym) {
+		case SDLK_SPACE:
+			if(currentView == SCENE_ENTIERE){
+				currentView = DANS_LE_TUBE;
+				drawMyScene();
+			}else{
+				currentView = SCENE_ENTIERE;
+			}
+			break;
         case SDLK_q:
         case SDLK_ESCAPE:
             /* ESC key was pressed */
@@ -302,8 +338,10 @@ int main(int argc, char **argv) {
                     break;
             }
         }
-
-        drawGLScene();
+		if(currentView == SCENE_ENTIERE){
+			drawGLScene();
+		}
+        
     }
 
     /* Should never get here */
