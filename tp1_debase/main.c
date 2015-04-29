@@ -278,7 +278,7 @@ int drawMyScene(GLvoid) {
 void handleKeyPress(SDL_Keysym *keysym) {
     switch (keysym->sym) {
         case SDLK_UP:
-            if (currentStep < (nbPoints-4)*20) {
+            if (currentStep < (nbPoints*10)-20 -1) {
                 currentStep++;
                 drawMyScene();
             }
