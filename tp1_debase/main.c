@@ -36,7 +36,7 @@ SDL_GLContext glcontext;
 SDL_WindowFlags fullScreenValue[FULLSCREENNB] = {0, SDL_WINDOW_FULLSCREEN, SDL_WINDOW_FULLSCREEN_DESKTOP};
 int currentFullscreen = 0;
 int currentView = SCENE_ENTIERE;
-int currentStep = 20;
+int currentStep = 0;
 
 /* fonction pour quitter */
 void Quit(int returnCode) {
@@ -230,7 +230,9 @@ int drawMyScene(GLvoid) {
     vecteur3d Up = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
     //vecteur3d ViewDir = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
 
-    int k = currentStep / 20;
+	printf("CurentStep = %d \n",currentStep);
+
+    int k = (currentStep / 20) * 2;
     int bigT = currentStep % 20;
     double t = ((double) bigT)/20;
     printf("k = %d ; bigT = %d\n", k, bigT); 
