@@ -96,6 +96,8 @@ void creerRepere(repere Res0, repere Res1, const repere R, double rayon) {
     vec_prod3d(newJ, newI, newV);
     normalize3d(newJ);
     normalize3d(newI);
+    normalize3d(newV);
+    scal_prod3d(newV, rayon);
     
     cp_point3d(newCentre0, R -> C);
     translate3d(newCentre0, 1, newV);

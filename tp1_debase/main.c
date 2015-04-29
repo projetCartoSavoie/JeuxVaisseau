@@ -122,7 +122,7 @@ void initGLScene() {
     point3d_cell A[1];
     /*point3d_cell Pt[6];*/
     
-    double R = 3.0;
+    double R = 5.0;
     int precision = 10;
 
     D -> x = 0.0;
@@ -184,7 +184,7 @@ int drawGLScene(GLvoid) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glLoadIdentity();
-    glTranslatef(0.0f, -10.0f, -50.0f);
+    glTranslatef(0.0f, 0.0f, -50.0f);
     glRotatef(rtri, 0.0f, 1.0f, 1.0f);
 
 
