@@ -20,13 +20,9 @@
 #include "array.h"
 #include "triangulation_tools.h"
 #include "tests.h"
-#include "levaisseau.h"
+#define SCENE_ENTIERE 0
+#define DANS_LE_TUBE 1
 #define FULLSCREENNB 3
-#define VAISSEAU 1
-#define DANS_LE_TUBE 2
-#define SCENE_ENTIERE 3
-
-
 
 /* La "window SDL", c'est à dire la fenêtre où l'on dessine
  * obligatoirement une variable globale, car les "callbacks"
@@ -40,7 +36,7 @@ SDL_GLContext glcontext;
 SDL_WindowFlags fullScreenValue[FULLSCREENNB] = {0, SDL_WINDOW_FULLSCREEN, SDL_WINDOW_FULLSCREEN_DESKTOP};
 int currentFullscreen = 0;
 int currentView = SCENE_ENTIERE;
-int currentStep = 10;
+int currentStep = 0;
 
 /* fonction pour quitter */
 void Quit(int returnCode) {
@@ -114,7 +110,7 @@ int initGL(GLvoid) {
 
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-    glDisable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
 
     /* Really Nice Perspective Calculations */
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
@@ -128,8 +124,6 @@ int initGL(GLvoid) {
 /* variable globale de la scène */
 half_edge cylindre_initial = NULL;
 gl_object *gl_cylindre_initial = NULL;
-half_edge vaisseau = NULL;
-gl_object *gl_vaisseau = NULL;
 repere Rep = NULL;
 int nbPoints;
 
@@ -153,13 +147,9 @@ void initGLScene() {
 
 
     cylindre_initial = testTubeEntier(nbPoints, Rep, D, A, R, precision);
-    vaisseau = creerVaisseau();
 
     if (cylindre_initial) {
         gl_cylindre_initial = triangulation_poly_to_gl_object(cylindre_initial);
-    }
-    if (vaisseau) {
-        gl_vaisseau = triangulation_poly_to_gl_object(vaisseau);
     }
 }
 
@@ -224,36 +214,6 @@ int drawGLScene(GLvoid) {
     rtri += 45.0f * (float) delta;
 
     return (1);
-}
-
-int drawMyVaisseau(GLvoid){
-	
-	static GLfloat rtri;
-
-    double delta = count_frames();
-	
-	/* Clear The Screen And The Depth Buffer */
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    glLoadIdentity();
-    
-    glTranslatef(0.0f, -1.0f, -10.0f);
-    glRotatef(rtri, 0.0f, 1.0f, 1.0f);
-    
-    if (gl_vaisseau) {
-        glColor3f(0.7f, 0.2f, 0.2f);
-        //~ glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-        glDrawObject(gl_vaisseau);
-    }
-    
-    /* Draw it to the screen */
-    SDL_GL_SwapWindow(window);
-    
-    /* Increase The Rotation Variable For The Triangle */
-
-    rtri += 45.0f * (float) delta;
-    
-	return(1);
 }
 
 /* La fonction qui dessine la scène */
@@ -330,17 +290,13 @@ void handleKeyPress(SDL_Keysym *keysym) {
             }
             break;
         case SDLK_SPACE:
-			currentView = DANS_LE_TUBE;
-			drawMyScene();
+            if (currentView == SCENE_ENTIERE) {
+                currentView = DANS_LE_TUBE;
+                drawMyScene();
+            } else {
+                currentView = SCENE_ENTIERE;
+            }
             break;
-        case SDLK_s:
-			currentView = SCENE_ENTIERE;
-			drawGLScene();
-			break;
-		case SDLK_v:
-			currentView = VAISSEAU;
-			drawMyVaisseau();
-			break;
         case SDLK_q:
         case SDLK_ESCAPE:
             /* ESC key was pressed */
@@ -436,11 +392,10 @@ int main(int argc, char **argv) {
         if (currentView == SCENE_ENTIERE) {
             drawGLScene();
         }
-        if (currentView == VAISSEAU) {
-            drawMyVaisseau();
-        }
+
     }
 
     /* Should never get here */
     return ( 0);
 }
+

@@ -18,7 +18,7 @@ else
 GC_LIB=
 endif
 
-SRCS=$(GC_SRC) triangulation.c geometry.c array.c triangulation_tools.c tests.c main.c
+SRCS=$(GC_SRC) triangulation.c geometry.c array.c triangulation_tools.c levaisseau.c tests.c main.c 
 OBJS=$(SRCS:.c=.o)
 INCLUDES=
 CC=gcc

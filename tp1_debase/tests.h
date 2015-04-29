@@ -18,7 +18,7 @@ void cp_point3d(point3d R, const point3d D);
 void cp_vecteur3d(vecteur3d R, const vecteur3d D);
 
 half_edge testTubeEntier(int nbPoints, repere Rep, const point3d D, const point3d A, double R, int precision);
-
+half_edge creerVaisseau();
 
 
 #endif
