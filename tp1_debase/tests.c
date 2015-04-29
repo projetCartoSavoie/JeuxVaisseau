@@ -76,18 +76,17 @@ void creerRepere(repere Res0, repere Res1, const repere R, double rayon) {
 
     assert(!(R -> V -> x == 0 && R -> V -> y == 0 && R -> V -> z == 0));
 
-    double maxiDelta = rayon / 100;
+    double maxiDelta = rayon / 7;
     DeltaI -> x = 2 * maxiDelta * (rand() / (double) RAND_MAX) - maxiDelta;
     DeltaI -> y = 2 * maxiDelta * (rand() / (double) RAND_MAX) - maxiDelta;
     DeltaI -> z = 2 * maxiDelta * (rand() / (double) RAND_MAX) - maxiDelta;
     while (norm3d(DeltaI) < 0.0001 || norm3d(DeltaI) > maxiDelta) {
-        printf("mauvais delta");
         DeltaI -> x = 2 * maxiDelta * (rand() / (double) RAND_MAX) - maxiDelta;
         DeltaI -> y = 2 * maxiDelta * (rand() / (double) RAND_MAX) - maxiDelta;
         DeltaI -> z = 2 * maxiDelta * (rand() / (double) RAND_MAX) - maxiDelta;
     }
     
-    cp_vecteur3d(newI, R -> I);
+    cp_vecteur3d(newI, R -> J);
     add3d(newI, DeltaI);
     
     cp_vecteur3d(newV, R -> V);
@@ -96,6 +95,8 @@ void creerRepere(repere Res0, repere Res1, const repere R, double rayon) {
     vec_prod3d(newJ, newI, newV);
     normalize3d(newJ);
     normalize3d(newI);
+    
+    vec_prod3d(newV, newJ, newI);
     normalize3d(newV);
     scal_prod3d(newV, rayon);
     
@@ -106,13 +107,13 @@ void creerRepere(repere Res0, repere Res1, const repere R, double rayon) {
     translate3d(newCentre1, 1, newV);
     
     Res0 -> C = newCentre0;
-    Res0 -> I = newI;
-    Res0 -> J = newJ;
+    Res0 -> I = newJ;
+    Res0 -> J = newI;
     Res0 -> V = newV;
     
     Res1 -> C = newCentre1;
-    Res1 -> I = newI;
-    Res1 -> J = newJ;
+    Res1 -> I = newJ;
+    Res1 -> J = newI;
     Res1 -> V = newV;
 }
 
@@ -246,13 +247,13 @@ half_edge testTubeEntier(int nbPoints, const point3d D, const point3d A, double 
 
     //Enregistrement des points D et A munis du repère I,J,V aux deux premières places
     Rep[0].C = D;
-    Rep[0].I = I;
-    Rep[0].J = J;
+    Rep[0].I = J;
+    Rep[0].J = I;
     Rep[0].V = V;
 
     Rep[1].C = A;
-    Rep[1].I = I;
-    Rep[1].J = J;
+    Rep[1].I = J;
+    Rep[1].J = I;
     Rep[1].V = V;
 
     //Les suivants
@@ -260,6 +261,15 @@ half_edge testTubeEntier(int nbPoints, const point3d D, const point3d A, double 
     for (i = 1; i < (nbPoints / 2); i++) {
         creerRepere(&Rep[2 * i], &Rep[2 * i + 1], &Rep[2 * i - 1], R);
     }
+    
+    for (i = 0; i < nbPoints; i++) {
+        printf("vérification numéro %d\n", i);
+        printf("%f  %f  %f\n",dot_prod3d(Rep[i].I,Rep[i].J),dot_prod3d(Rep[i].J,Rep[i].V),dot_prod3d(Rep[i].I,Rep[i].V));
+        /*assert(dot_prod3d(Rep[i].I,Rep[i].J) < 0.1);
+        assert(dot_prod3d(Rep[i].J,Rep[i].V) < 0.1);
+        assert(dot_prod3d(Rep[i].I,Rep[i].V) < 0.1);*/
+    }
+    
     
     for (i = 0; i < nbPoints; i++) {
         printf("Point %d : centre (%f , %f , %f) V = (%f , %f , %f) I = (%f , %f , %f) J = (%f , %f , %f) \n",

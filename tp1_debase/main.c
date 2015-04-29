@@ -184,7 +184,7 @@ int drawGLScene(GLvoid) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glLoadIdentity();
-    glTranslatef(0.0f, 0.0f, -50.0f);
+    glTranslatef(0.0f, 0.0f, -100.0f);
     glRotatef(rtri, 0.0f, 1.0f, 1.0f);
 
 
