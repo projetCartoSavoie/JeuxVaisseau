@@ -22,6 +22,7 @@
 #include "tests.h"
 #define SCENE_ENTIERE 0
 #define DANS_LE_TUBE 1
+#define FULLSCREENNB 3
 
 /* La "window SDL", c'est à dire la fenêtre où l'on dessine
  * obligatoirement une variable globale, car les "callbacks"
@@ -31,6 +32,11 @@
 SDL_Window *window;
 /* et son "context" openGL */
 SDL_GLContext glcontext;
+
+SDL_WindowFlags fullScreenValue[FULLSCREENNB] = {0, SDL_WINDOW_FULLSCREEN, SDL_WINDOW_FULLSCREEN_DESKTOP};
+int currentFullscreen = 0;
+int currentView = SCENE_ENTIERE;
+int currentStep = 1;
 
 /* fonction pour quitter */
 void Quit(int returnCode) {
@@ -118,13 +124,18 @@ int initGL(GLvoid) {
 /* variable globale de la scène */
 half_edge cylindre_initial = NULL;
 gl_object *gl_cylindre_initial = NULL;
+repere Rep = NULL;
+int nbPoints;
 
 void initGLScene() {
-    point3d_cell D[1];
-    point3d_cell A[1];
-    
+
     double R = 3.0;
     int precision = 20;
+    nbPoints = 50;
+
+    point3d_cell D[1];
+    point3d_cell A[1];
+    Rep = (repere) GC_malloc(nbPoints * sizeof (repere_cell));
 
     D -> x = 0.0;
     D -> y = 0.0;
@@ -134,8 +145,8 @@ void initGLScene() {
     A -> y = 0.0;
     A -> z = 0.0;
 
-    
-    cylindre_initial = testTubeEntier(50, D, A, R, precision);
+
+    cylindre_initial = testTubeEntier(nbPoints, Rep, D, A, R, precision);
 
     if (cylindre_initial) {
         gl_cylindre_initial = triangulation_poly_to_gl_object(cylindre_initial);
@@ -187,7 +198,7 @@ int drawGLScene(GLvoid) {
     glLoadIdentity();
     glTranslatef(0.0f, -5.0f, -250.0f);
     glRotatef(rtri, 0.0f, 1.0f, 1.0f);
-	//glRotatef(50.0f, 1.0f, 1.0f, 1.0f);
+    //glRotatef(50.0f, 1.0f, 1.0f, 1.0f);
 
     if (gl_cylindre_initial) {
         glColor3f(0.7f, 0.2f, 0.2f);
@@ -212,17 +223,37 @@ int drawMyScene(GLvoid) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glLoadIdentity();
-    glTranslatef(0.0f, 0.0f, 0.0f);
-	gluLookAt(0.0f,0.0f,0.0f,0.0f,0.0f,3.0f,0.0f,0.1f,0.0f);
-	
+
+
+    point3d Eye = (point3d) GC_malloc(sizeof (point3d_cell));
+    point3d Cible = (point3d) GC_malloc(sizeof (point3d_cell));
+    vecteur3d Up = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
+    vecteur3d ViewDir = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
+
+    cp_point3d(Eye, Rep[currentStep].C);
+    cp_point3d(Cible, Rep[currentStep + 1].C);
+
+    vec3d(ViewDir, Eye, Cible);
+    //translate3d(Cible, 2.0, ViewDir);
+
+    cp_point3d(Eye, Rep[currentStep].C);
+    //translate3d(Eye, -0.3, Rep[currentStep].I);
+
+    cp_vecteur3d(Up, Rep[currentStep].I);
+
+    gluLookAt(
+            (float) (Eye->x), (float) (Eye->y), (float) (Eye->z),
+            (float) (Cible->x), (float) (Cible->y), (float) (Cible->z),
+            (float) (Up->x), (float) (Up->y), (float) (Up->z));
+
     if (gl_cylindre_initial) {
         glColor3f(0.7f, 0.2f, 0.2f);
         //glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
         glDrawObject(gl_cylindre_initial);
     }
-	
-	
-	
+
+
+
     /* Draw it to the screen */
     SDL_GL_SwapWindow(window);
 
@@ -231,21 +262,23 @@ int drawMyScene(GLvoid) {
     return (1);
 }
 
-#define FULLSCREENNB 3
-SDL_WindowFlags fullScreenValue[FULLSCREENNB] = {0, SDL_WINDOW_FULLSCREEN, SDL_WINDOW_FULLSCREEN_DESKTOP};
-int currentFullscreen = 0;
-int currentView = SCENE_ENTIERE;
 /* fonstion de gestion du clavier */
 void handleKeyPress(SDL_Keysym *keysym) {
     switch (keysym->sym) {
-		case SDLK_SPACE:
-			if(currentView == SCENE_ENTIERE){
-				currentView = DANS_LE_TUBE;
-				drawMyScene();
-			}else{
-				currentView = SCENE_ENTIERE;
-			}
-			break;
+        case SDLK_UP:
+            if(currentStep < nbPoints - 2) {
+                currentStep++;
+                drawMyScene();
+            }
+            break;
+        case SDLK_SPACE:
+            if (currentView == SCENE_ENTIERE) {
+                currentView = DANS_LE_TUBE;
+                drawMyScene();
+            } else {
+                currentView = SCENE_ENTIERE;
+            }
+            break;
         case SDLK_q:
         case SDLK_ESCAPE:
             /* ESC key was pressed */
@@ -338,10 +371,10 @@ int main(int argc, char **argv) {
                     break;
             }
         }
-		if(currentView == SCENE_ENTIERE){
-			drawGLScene();
-		}
-        
+        if (currentView == SCENE_ENTIERE) {
+            drawGLScene();
+        }
+
     }
 
     /* Should never get here */

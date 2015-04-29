@@ -12,16 +12,6 @@
 #define FALSE = 0
 #define TRUE = 1
 
-typedef struct repere_cell* repere;
-typedef struct repere_cell repere_cell;
-struct repere_cell {
-    point3d C;
-    vecteur3d V;
-    vecteur3d I;
-    vecteur3d J;
-    gl_vertex** PointsAutour;
-};
-
 half_edge test_tetra() {
     size_t n = 4;
     gl_vertex *v = GC_malloc(n * sizeof (gl_vertex));
@@ -126,61 +116,6 @@ void creerRepere(repere Res0, repere Res1, const repere R, double rayon, vecteur
     Res1 -> V = newV;
 }
 
-/*
-void creerRepere(repere Res0, repere Res1, const repere R, double rayon) {
-
-    vecteur3d newV = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
-    vecteur3d newJ = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
-    vecteur3d newI = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
-    vecteur3d DeltaI = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
-    
-    point3d newCentre0 = (point3d) GC_malloc(sizeof (point3d_cell));
-    point3d newCentre1 = (point3d) GC_malloc(sizeof (point3d_cell));
-
-
-    assert(!(R -> V -> x == 0 && R -> V -> y == 0 && R -> V -> z == 0));
-
-    double maxiDelta = rayon / 7;
-    DeltaI -> x = 2 * maxiDelta * (rand() / (double) RAND_MAX) - maxiDelta;
-    DeltaI -> y = 2 * maxiDelta * (rand() / (double) RAND_MAX) - maxiDelta;
-    DeltaI -> z = 2 * maxiDelta * (rand() / (double) RAND_MAX) - maxiDelta;
-    while (norm3d(DeltaI) < 0.0001 || norm3d(DeltaI) > maxiDelta) {
-        DeltaI -> x = 2 * maxiDelta * (rand() / (double) RAND_MAX) - maxiDelta;
-        DeltaI -> y = 2 * maxiDelta * (rand() / (double) RAND_MAX) - maxiDelta;
-        DeltaI -> z = 2 * maxiDelta * (rand() / (double) RAND_MAX) - maxiDelta;
-    }
-    
-    cp_vecteur3d(newI, R -> J);
-    add3d(newI, DeltaI);
-    
-    cp_vecteur3d(newV, R -> V);
-    add3d(newV, newI);
-    
-    vec_prod3d(newJ, newI, newV);
-    normalize3d(newJ);
-    normalize3d(newI);
-    
-    vec_prod3d(newV, newJ, newI);
-    normalize3d(newV);
-    scal_prod3d(newV, rayon);
-    
-    cp_point3d(newCentre0, R -> C);
-    translate3d(newCentre0, 1, newV);
-    
-    cp_point3d(newCentre1, newCentre0);
-    translate3d(newCentre1, 1, newV);
-    
-    Res0 -> C = newCentre0;
-    Res0 -> I = newJ;
-    Res0 -> J = newI;
-    Res0 -> V = newV;
-    
-    Res1 -> C = newCentre1;
-    Res1 -> I = newJ;
-    Res1 -> J = newI;
-    Res1 -> V = newV;
-}*/
-
 void creerPointsAutour(repere Rep, double R, int precision) {
     Rep -> PointsAutour = (gl_vertex**) GC_malloc(precision * sizeof (gl_vertex*));
     
@@ -273,15 +208,15 @@ half_edge raccorder(half_edge e, gl_vertex** GQ, int precision) {
 }
 
 
-half_edge testTubeEntier(int nbPoints, const point3d D, const point3d A, double R, int precision) {
+half_edge testTubeEntier(int nbPoints, repere Rep, const point3d D, const point3d A, double R, int precision) {
 
     assert(nbPoints >= 2);
     half_edge test_tetra();
     half_edge test_cylindre(point3d D, point3d A, double R, int precision);
     void testSqueletteDuTube(point3d resultats, int nbPoints, const point3d D , const point3d A , double R, int precision);
+    
     //Chercher les repères
-    repere Rep = (repere) GC_malloc(nbPoints * sizeof (repere_cell));
-
+    
     //Le premier
     //V = vec(DA); J ortho à V ; I = V^J
     vecteur3d V = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
