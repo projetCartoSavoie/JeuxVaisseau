@@ -79,11 +79,21 @@ void creerPointsVaisseau(point3d* P) {
     
 }
 
-void mettreDansTuyau(point3d* P) {
+void transformationUtilisateur(point3d* P, double ri, double rj, double rv, double ti, double tj) {
     
 }
 
-half_edge creerVaisseau() {
+void mettreDansTuyau(point3d* P, const point3d C, const vecteur3d I, const vecteur3d J, const vecteur3d V) {
+    
+    vecteur3d CP = (vecteur3d) GC_malloc(sizeof(vecteur3d_cell));
+    int i;
+    for (i = 0; i < 16; i++) {
+        chge_rep3d(CP, P[i] -> x, I, P[i] -> y, J, P[i] -> z, V);
+        trouve_extremite(P[i], CP, C);    
+    }
+}
+
+half_edge creerVaisseau(double ri,double rj, double rv, double ti, double tj, const point3d C, const vecteur3d Ilocal, const vecteur3d Jlocal, const vecteur3d Vlocal) {
 
     //Point de base 1 & 2
     point3d* P = (point3d*) GC_malloc(16 * sizeof (point3d));
@@ -93,6 +103,8 @@ half_edge creerVaisseau() {
     }
 
     creerPointsVaisseau(P);
+    mettreDansTuyau(P,C,Ilocal,Jlocal,Vlocal);
+    
     //Chercher les repères
     //Le premier
     //V = vec(DA); J ortho à V ; I = V^J

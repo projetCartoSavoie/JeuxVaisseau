@@ -153,7 +153,7 @@ void initGLScene() {
 
 
     cylindre_initial = testTubeEntier(nbPoints, Rep, D, A, R, precision);
-    vaisseau = creerVaisseau();
+    vaisseau = creerVaisseau(0,0,0,0,0,Rep[1].C, Rep[1].I, Rep[1].J, Rep[1].V);
 
    
     if (cylindre_initial) {
@@ -266,43 +266,44 @@ int drawMyScene(GLvoid) {
 
     glLoadIdentity();
 
-
     point3d Eye = (point3d) GC_malloc(sizeof (point3d_cell));
     point3d Cible = (point3d) GC_malloc(sizeof (point3d_cell));
     vecteur3d Up = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
-    //vecteur3d ViewDir = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
-
-	printf("CurentStep = %d \n",currentStep);
+    vecteur3d Jlocal = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
+    vecteur3d Vlocal = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
 
     int k = (currentStep / 20) * 2;
     int bigT = currentStep % 20;
     double t = ((double) bigT)/20;
     printf("k = %d ; bigT = %d\n", k, bigT); 
     
-    //cp_point3d(Eye, Rep[currentStep].C);
     bary3d3points(Eye, (1-t)*(1-t), Rep[k].C, 2*t*(1-t), Rep[k + 1].C, t*t, Rep[k+2].C);  
-    //cp_point3d(Cible, Rep[currentStep + 1].C);
     bary3d3points(Cible, (1-t)*(1-t), Rep[k+1].C, 2*t*(1-t), Rep[k + 2].C, t*t, Rep[k+3].C);  
+    moyenne3d3vecteurs(Up, (1-t)*(1-t), Rep[k].I, 2*t*(1-t), Rep[k + 1].I, t*t, Rep[k+2].I); 
+    moyenne3d3vecteurs(Jlocal, (1-t)*(1-t), Rep[k].J, 2*t*(1-t), Rep[k + 1].J, t*t, Rep[k+2].J); 
+    moyenne3d3vecteurs(Vlocal, (1-t)*(1-t), Rep[k].V, 2*t*(1-t), Rep[k + 1].V, t*t, Rep[k+2].V); 
+    //translate3d(Eye, -0.5, Up);
+    //translate3d(Eye, 2, Jlocal);
 
-    //cp_vecteur3d(Up, Rep[currentStep].I);
-    moyenne3d3vecteurs(Up, (1-t)*(1-t), Rep[k].I, 2*t*(1-t), Rep[k + 1].I, t*t, Rep[k+2].I);
-    
-    //translate3d(Eye, -0.3, Up);
-
-    printf("Eye = (%f %f %f) ;; Cible = (%f %f %f) ;; Up = (%f %f %f) \n",
-            Eye->x, Eye->y, Eye->z,
-            Cible->x, Cible->y, Cible->z,
-            Up->x, Up->y, Up->z
-            );
-    
     gluLookAt(
             (float) (Eye->x), (float) (Eye->y), (float) (Eye->z),
             (float) (Cible->x), (float) (Cible->y), (float) (Cible->z),
             (float) (Up->x), (float) (Up->y), (float) (Up->z));
 
+    vaisseau = creerVaisseau(0,0,0,0,0,Eye, Up, Jlocal, Vlocal);
+    if (vaisseau) {
+        
+        glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+        gl_vaisseau = triangulation_poly_to_gl_object(vaisseau);
+        if (gl_vaisseau) {
+            printf("dessin vaisseau\n");
+            glColor3f(0.2f, 0.2f, 0.7f);
+            glDrawObject(gl_vaisseau);
+        }
+    }
     if (gl_cylindre_initial) {
         glColor3f(0.7f, 0.2f, 0.2f);
-        //glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+        glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
         glDrawObject(gl_cylindre_initial);
     }
 

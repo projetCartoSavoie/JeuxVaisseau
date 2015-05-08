@@ -200,19 +200,16 @@ gl_object* triangulation_to_gl_object(half_edge e) {
 
 gl_object* triangulation_poly_to_gl_object(half_edge e) {
 
-    printf("debut triangulation\n");
   size_t nb_triangles = 0;
 
   void incr_nbt(half_edge e, gl_vertex* v1, gl_vertex* v2, gl_vertex* v3) { nb_triangles++; }
   iter_triangles(e, incr_nbt);
   
-  printf("%d triangles \n", nb_triangles);
 
   size_t nb_vertices = nb_triangles * 3;
 
   gl_vertex* v0 = e->vertex;
   
-  printf("v0 = e->vertex OK \n");
 
   gl_object* obj =  (gl_object*) GC_malloc(sizeof(gl_object));
   obj->vertex_type = v0 -> vertex_type;
@@ -277,13 +274,10 @@ gl_object* triangulation_poly_to_gl_object(half_edge e) {
   }
 
   void sett(half_edge e, gl_vertex* v1, gl_vertex* v2, gl_vertex* v3) {
-      printf("sett\n");
     gl_vertex *w1 = v1, *w2 = v2, *w3 = v3;
 
-    printf("def gl_vertex\n");
     union vecteurs N = normal(w1, w2, w3);
 
-    printf("normal\n");
     memcpy(obj->vertices.raw + i * coord_size, w1->coord.raw, coord_size);
     memcpy(obj->vertices.raw + (i+1) * coord_size, w2->coord.raw, coord_size);
     memcpy(obj->vertices.raw + (i+2) * coord_size, w3->coord.raw, coord_size);
@@ -292,11 +286,9 @@ gl_object* triangulation_poly_to_gl_object(half_edge e) {
     memcpy(obj->normals.raw + (i+1) * coord_size, N.raw, coord_size);
     memcpy(obj->normals.raw + (i+2) * coord_size, N.raw, coord_size);
 
-    printf("mem_copy\n");
     
     GC_free(N.raw);
     
-    printf("gc_free\n");
 
     switch(obj->index_type) {
     case GL_UNSIGNED_BYTE:
@@ -322,7 +314,6 @@ gl_object* triangulation_poly_to_gl_object(half_edge e) {
 
   iter_triangles(e, sett);
 
-  printf("fin triangulation\n");
 
   return(obj);
 
