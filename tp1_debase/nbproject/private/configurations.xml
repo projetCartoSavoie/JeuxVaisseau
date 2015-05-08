@@ -7,7 +7,10 @@
       <in>gc.h</in>
       <in>geometry.c</in>
       <in>geometry.h</in>
+      <in>levaisseau.c</in>
+      <in>levaisseau.h</in>
       <in>main.c</in>
+      <in>main_old_vaisseaux.c</in>
       <in>old_main.c</in>
       <in>old_tests.c</in>
       <in>testBezier.c</in>

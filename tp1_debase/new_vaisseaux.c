@@ -79,20 +79,24 @@ void creerPointsVaisseau(point3d* P) {
     
 }
 
-void mettreDansTuyau(point3d* P) {
-    
-}
-
 half_edge creerVaisseau() {
-
+    
     //Point de base 1 & 2
     point3d* P = (point3d*) GC_malloc(16 * sizeof (point3d));
     int i;
     for (i = 0; i < 16; i++) {
         P[i] = (point3d) GC_malloc(sizeof (point3d_cell));
     }
-
+    gl_vertex** GP = (gl_vertex**) GC_malloc(16 * sizeof (gl_vertex*));
+    for (i = 0; i < 16; i++) {
+        GP[i] = (gl_vertex*) GC_malloc(sizeof (gl_vertex));
+        GP[i] = GLvertex3d(P[i]->x, P[i]->y, P[i]->z);
+    }
+   
     creerPointsVaisseau(P);
+    printf("fin créerPoints\n");
+
+    
     //Chercher les repères
     //Le premier
     //V = vec(DA); J ortho à V ; I = V^J
@@ -100,7 +104,7 @@ half_edge creerVaisseau() {
     vecteur3d I = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
     vecteur3d J = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
 
-    vec3d(V,P[0],P[1]);
+    vec3d(V, P[0], P[1]);
 
     assert(!(V -> x == 0 && V -> y == 0 && V -> z == 0));
     if (abs(V -> z) < abs(V -> x) && abs(V -> z) < abs(V -> y)) {
@@ -119,77 +123,33 @@ half_edge creerVaisseau() {
     normalize3d(J);
     vec_prod3d(I, V, J);
     normalize3d(I);
-
+    
     //Here I have my repere
     //Create my Base on 3 points and go create other triangle
-
-    gl_vertex* GP1 = (gl_vertex*) GC_malloc(sizeof (gl_vertex));
-    gl_vertex* GP2 = (gl_vertex*) GC_malloc(sizeof (gl_vertex));
-    gl_vertex* GP3 = (gl_vertex*) GC_malloc(sizeof (gl_vertex));
-
-    GP1 = GLvertex3d(P[0]->x, P[0]->y,P[0]->z);
-    GP2 = GLvertex3d(P[1]->x,P[1]->y,P[1]->z);
-    GP3 = GLvertex3d(P[2]->x,P[2]->y,P[2]->z);
-
-    half_edge e1 = create_triangle(GP1, GP2, GP3);
+    half_edge e1 = create_triangle(GP[1], GP[2], GP[3]);
 
     //Base triangle create
-    gl_vertex* GP4 = (gl_vertex*) GC_malloc(sizeof (gl_vertex));
-    
-    GP4 = GLvertex3d(P[3]->x,P[3]->y,P[3]->z);
-
-    add_vertex_to_edge(e1->next, GP4);
+    add_vertex_to_edge(e1->next, GP[4]);
 
     //Central rectangle create
-    gl_vertex* GP5 = (gl_vertex*) GC_malloc(sizeof (gl_vertex));
-    gl_vertex* GP6 = (gl_vertex*) GC_malloc(sizeof (gl_vertex));
-
-    GP5 = GLvertex3d(P[4]->x,P[4]->y,P[4]->z);
-    GP6 = GLvertex3d(P[5]->x,P[5]->y,P[5]->z);
-
-    add_vertex_to_edge(e1->next->opp->next, GP5);
-    add_vertex_to_edge(e1->next->opp->next->next->opp->next, GP6);
+    add_vertex_to_edge(e1->next->opp->next, GP[5]);
+    add_vertex_to_edge(e1->next->opp->next->next->opp->next, GP[6]);
 
     //Tete rectangle
-    gl_vertex* GP7 = (gl_vertex*) GC_malloc(sizeof (gl_vertex));
-    gl_vertex* GP8 = (gl_vertex*) GC_malloc(sizeof (gl_vertex));
-
-    GP7 = GLvertex3d(P[6]->x,P[6]->y,P[6]->z);
-    GP8 = GLvertex3d(P[7]->x,P[7]->y,P[7]->z);
-
-    add_vertex_to_edge(e1->next->opp->next->next->opp->next->next, GP7);
-    add_vertex_to_edge(e1->next->opp->next->next->opp->next->next->next->opp->next, GP8);
-
+    add_vertex_to_edge(e1->next->opp->next->next->opp->next->next, GP[7]);
+    add_vertex_to_edge(e1->next->opp->next->next->opp->next->next->next->opp->next, GP[8]);
 
     //Tete triangle
-    gl_vertex* GP9 = (gl_vertex*) GC_malloc(sizeof (gl_vertex));
-    gl_vertex* GP10 = (gl_vertex*) GC_malloc(sizeof (gl_vertex));
-
-    GP9 = GLvertex3d(P[8]->x,P[8]->y,P[8]->z);
-    GP10 = GLvertex3d(P[9]->x,P[9]->y,P[9]->z);
-
-    add_vertex_to_edge(e1->next->opp->next->next->opp->next->next->next->opp->next->next->opp->next, GP9);
-    add_vertex_to_edge(e1->next->opp->next->next->opp->next->next->next, GP10);
-
+    add_vertex_to_edge(e1->next->opp->next->next->opp->next->next->next->opp->next->next->opp->next, GP[9]);
+    add_vertex_to_edge(e1->next->opp->next->next->opp->next->next->next, GP[10]);
+    
     //Corps du vraisseau
-    gl_vertex* GP11 = (gl_vertex*) GC_malloc(sizeof (gl_vertex));
-    gl_vertex* GP12 = (gl_vertex*) GC_malloc(sizeof (gl_vertex));
-
-    GP11 = GLvertex3d(P[10]->x,P[10]->y,P[10]->z);
-    GP12 = GLvertex3d(P[11]->x,P[11]->y,P[11]->z);
-
-    add_vertex_to_edge(e1->opp->prev->prev->prev->opp, GP11);
-    add_vertex_to_edge(e1->next->opp->next->next, GP12);
+    add_vertex_to_edge(e1->opp->prev->prev->prev->opp, GP[11]);
+    add_vertex_to_edge(e1->next->opp->next->next, GP[12]);
 
     //Arriére du vraisseau
-    gl_vertex* GP13 = (gl_vertex*) GC_malloc(sizeof (gl_vertex));
-    gl_vertex* GP14 = (gl_vertex*) GC_malloc(sizeof (gl_vertex));
-
-    GP13 = GLvertex3d(P[12]->x,P[12]->y,P[12]->z);
-    GP14 = GLvertex3d(P[13]->x,P[13]->y,P[13]->z);
-
-    add_vertex_to_edge(e1->next->next, GP13);
-    add_vertex_to_edge(e1->next->next->next, GP14);
+    add_vertex_to_edge(e1->next->next, GP[13]);
+    add_vertex_to_edge(e1->next->next->next, GP[14]);
 
     //Matiére
     close_triangle(e1->opp->prev->prev->prev->prev->opp, e1 -> opp);
@@ -200,20 +160,20 @@ half_edge creerVaisseau() {
     close_triangle(e1->next->next->next->opp->next->next, e1->next->next->next->opp->next->next->opp->next->next->next);
 
     //Avant du vraisseau
-    gl_vertex* GP15 = (gl_vertex*) GC_malloc(sizeof (gl_vertex));
-    gl_vertex* GP16 = (gl_vertex*) GC_malloc(sizeof (gl_vertex));
+    add_vertex_to_edge(e1->opp->prev->opp->next->opp->next->next->next->opp->next->next, GP[15]);
+    add_vertex_to_edge(e1->opp->prev->opp->next->opp->next->next->next->opp->next->next->next, GP[16]);
 
-    GP15 = GLvertex3d(P[14]->x,P[14]->y,P[14]->z);
-    GP16 = GLvertex3d(P[15]->x,P[15]->y,P[15]->z);
-
-    add_vertex_to_edge(e1->opp->prev->opp->next->opp->next->next->next->opp->next->next, GP15);
-    add_vertex_to_edge(e1->opp->prev->opp->next->opp->next->next->next->opp->next->next->next, GP16);
     //Matiére
     close_triangle(e1->opp->prev->opp->next->opp->next->next->next->opp->prev->opp, e1->opp->prev->opp->next->opp->next->next->next->opp->next->next->next->next);
     close_triangle(e1->opp->prev->opp->next->opp->next->next->next->opp->next->next->next->opp->next, e1->opp->prev->opp->next->opp->next->next->next->opp->next->next->opp->next->next);
 
+    printf("fin création vaisseau \n");
+
     return e1;
 
 }
+
+
+
 
 

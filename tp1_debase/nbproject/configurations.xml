@@ -4,6 +4,7 @@
     <df root="." name="0">
       <in>array.c</in>
       <in>geometry.c</in>
+      <in>levaisseau.c</in>
       <in>main.c</in>
       <in>old_main.c</in>
       <in>old_tests.c</in>
@@ -30,6 +31,9 @@
         <dependencyChecking>false</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
+      <flagsDictionary>
+        <element flagsID="0" commonFlags="-g"/>
+      </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
       <makefileType>
@@ -46,20 +50,45 @@
         </makeTool>
       </makefileType>
       <item path="array.c" ex="false" tool="0" flavor2="0">
+        <cTool flags="0">
+        </cTool>
       </item>
       <item path="geometry.c" ex="false" tool="0" flavor2="0">
+        <cTool flags="0">
+        </cTool>
+      </item>
+      <item path="levaisseau.c" ex="false" tool="0" flavor2="0">
+        <cTool flags="0">
+        </cTool>
       </item>
       <item path="main.c" ex="false" tool="0" flavor2="0">
+        <cTool flags="0">
+        </cTool>
       </item>
-      <item path="old_main.c" ex="false" tool="0" flavor2="0">
+      <item path="new_vaisseaux.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="old_tests.c" ex="false" tool="0" flavor2="0">
+      <item path="old_main.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="old_tests.c" ex="false" tool="0" flavor2="2">
+      </item>
+      <item path="old_vaisseaux.c" ex="false" tool="0" flavor2="2">
+        <cTool>
+          <preprocessorList>
+            <Elem>USE_BOEHM</Elem>
+          </preprocessorList>
+        </cTool>
       </item>
       <item path="tests.c" ex="false" tool="0" flavor2="0">
+        <cTool flags="0">
+        </cTool>
       </item>
       <item path="triangulation.c" ex="false" tool="0" flavor2="0">
+        <cTool flags="0">
+        </cTool>
       </item>
       <item path="triangulation_tools.c" ex="false" tool="0" flavor2="0">
+        <cTool flags="0">
+        </cTool>
       </item>
     </conf>
   </confs>

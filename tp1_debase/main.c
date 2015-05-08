@@ -155,12 +155,14 @@ void initGLScene() {
     cylindre_initial = testTubeEntier(nbPoints, Rep, D, A, R, precision);
     vaisseau = creerVaisseau();
 
+   
     if (cylindre_initial) {
         gl_cylindre_initial = triangulation_poly_to_gl_object(cylindre_initial);
     }
     if (vaisseau) {
         gl_vaisseau = triangulation_poly_to_gl_object(vaisseau);
     }
+
 }
 
 static unsigned int frames = 0;
