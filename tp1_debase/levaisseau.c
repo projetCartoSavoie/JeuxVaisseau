@@ -13,6 +13,13 @@
 
 
 half_edge creerVaisseau() {
+	
+	//Retourner le tableau des points
+	//Transformation_1
+	//Creer une méthode qui prend (ri, rj, rv, "3rotation", ti, tj) et un point.
+	//Gestion de l'incrementation des compteurs par les touches
+	
+	//Ajouter un paver autour du vaisseau.
 
 	//Point de base 1 & 2
 	point3d P1 = (point3d) GC_malloc(sizeof (point3d_cell));
