@@ -41,13 +41,31 @@ void fnedges(half_edge e, VERTEX* v1, VERTEX* v2) {
     numedges++;
 }
 
+void creerRepereIntermediaire(repere Res, int k, int i, const repere R, double t) {
+
+    vecteur3d newV = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
+    vecteur3d newJ = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
+    vecteur3d newI = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
+    point3d newCentre = (point3d) GC_malloc(sizeof (point3d_cell));
+
+    bary3d3points(newCentre, (1 - t)*(1 - t), R[k].C, 2 * t * (1 - t), R[k+1].C, t*t, R[k+2].C);
+    moyenne3d3vecteurs(newI, (1 - t)*(1 - t), R[k].I, 2 * t * (1 - t), R[k+1].I, t*t, R[k+2].I);
+    moyenne3d3vecteurs(newJ, (1 - t)*(1 - t), R[k].J, 2 * t * (1 - t), R[k+1].J, t*t, R[k+2].J);
+    moyenne3d3vecteurs(newV, (1 - t)*(1 - t), R[k].V, 2 * t * (1 - t), R[k+1].V, t*t, R[k+2].V);
+
+    Res[(k-1) * 20 + i].C = newCentre;
+    Res[(k-1) * 20 + i].I = newI;
+    Res[(k-1) * 20 + i].J = newJ;
+    Res[(k-1) * 20 + i].V = newV;
+}
+
 void creerRepere(repere Res0, repere Res1, const repere R, double rayon, vecteur3d A) {
 
     vecteur3d newV = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
     vecteur3d newJ = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
     vecteur3d newI = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
     vecteur3d DeltaA = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
-    
+
     point3d newCentre0 = (point3d) GC_malloc(sizeof (point3d_cell));
     point3d newCentre1 = (point3d) GC_malloc(sizeof (point3d_cell));
 
@@ -63,41 +81,41 @@ void creerRepere(repere Res0, repere Res1, const repere R, double rayon, vecteur
         DeltaA -> y = 2 * maxiDelta * (rand() / (double) RAND_MAX) - maxiDelta;
         DeltaA -> z = 2 * maxiDelta * (rand() / (double) RAND_MAX) - maxiDelta;
     }
-    
+
     //a' = a + DeltaA
     add3d(A, DeltaA);
-    
+
     //v' = v + a'
-    cp_vecteur3d(newV,R -> V);
-    add3d(newV,A);
-    
+    cp_vecteur3d(newV, R -> V);
+    add3d(newV, A);
+
     //i' = j^v'
     vec_prod3d(newI, R -> J, newV);
-    
+
     //j' = v'^i'
     vec_prod3d(newJ, newV, newI);
-    
+
     //i' = j'^v'
     vec_prod3d(newI, newJ, newV);
-    
+
     //normalisation
     normalize3d(newI);
     normalize3d(newJ);
     normalize3d(newV);
     scal_prod3d(newV, rayon);
-    
+
     //centres
     cp_point3d(newCentre0, R -> C);
     translate3d(newCentre0, 1, newV);
-    
+
     cp_point3d(newCentre1, newCentre0);
     translate3d(newCentre1, 1, newV);
-    
+
     Res0 -> C = newCentre0;
     Res0 -> I = newI;
     Res0 -> J = newJ;
     Res0 -> V = newV;
-    
+
     Res1 -> C = newCentre1;
     Res1 -> I = newI;
     Res1 -> J = newJ;
@@ -106,7 +124,7 @@ void creerRepere(repere Res0, repere Res1, const repere R, double rayon, vecteur
 
 void creerPointsAutour(repere Rep, double R, int precision) {
     Rep -> PointsAutour = (gl_vertex**) GC_malloc(precision * sizeof (gl_vertex*));
-    
+
     point3d P = (point3d) GC_malloc(precision * sizeof (point3d_cell));
 
     int k;
@@ -121,7 +139,7 @@ void creerPointsAutour(repere Rep, double R, int precision) {
 
     for (k = 0; k < precision; k++) {
         Rep -> PointsAutour[k] = GLvertex3d(P[k].x, P[k].y, P[k].z);
-    } 
+    }
 }
 
 half_edge raccorderDebut(gl_vertex** GP, gl_vertex** GQ, int precision) {
@@ -144,53 +162,59 @@ half_edge raccorderDebut(gl_vertex** GP, gl_vertex** GQ, int precision) {
     close_triangle(epred -> next, e1 -> opp);
 
     //Vérification
-    int cons_euler = 0; numfaces = 0; numedges = 0; numsommets = 0;
+    int cons_euler = 0;
+    numfaces = 0;
+    numedges = 0;
+    numsommets = 0;
     iter_triangles(e1, fnfaces);
     iter_edges(e1, fnedges);
     iter_vertices(e1, fnsommets);
 
     cons_euler = numfaces + numsommets - numedges;
     printf("constante euler : %d + %d - %d = %d \n", numfaces, numsommets, numedges, cons_euler);
-    
+
     //Rendre le premier half_edge
     return e1 -> opp -> prev;
 }
 
 half_edge raccorder(half_edge e, gl_vertex** GQ, int precision) {
-    
+
     printf("raccorder\n");
     half_edge epred, e2;
-    add_vertex_to_edge(e->opp,GQ[1]);
-    add_vertex_to_edge(e->prev->opp,GQ[0]);
-    
+    add_vertex_to_edge(e->opp, GQ[1]);
+    add_vertex_to_edge(e->prev->opp, GQ[0]);
+
     epred = e -> opp -> next;
     int k;
     for (k = 1; k < precision - 1; k++) {
         add_vertex_to_edge(epred, GQ[k + 1]);
         e2 = epred->prev;
-        while(e2 -> prev != NULL){
+        while (e2 -> prev != NULL) {
             e2 = e2 -> prev;
         }
         close_triangle(e2 -> opp, epred -> next);
         epred = epred -> next -> next -> opp -> next;
     }
-    
+
     add_vertex_to_edge(epred, GQ[0]);
     e2 = e -> next;
-    while(e2 -> next != NULL) {
+    while (e2 -> next != NULL) {
         e2 = e2 -> next;
     }
     fill_triangle(epred -> next, e -> prev -> prev -> opp, e2);
-    
+
     //Vérification
-    int cons_euler = 0; numfaces = 0; numedges = 0; numsommets = 0;
+    int cons_euler = 0;
+    numfaces = 0;
+    numedges = 0;
+    numsommets = 0;
     iter_triangles(e, fnfaces);
     iter_edges(e, fnedges);
     iter_vertices(e, fnsommets);
 
     cons_euler = numfaces + numsommets - numedges;
     printf("constante euler : %d + %d - %d = %d \n", numfaces, numsommets, numedges, cons_euler);
-    
+
     /*return e;*/
     return e->prev->prev->opp->prev;
 }
@@ -198,11 +222,11 @@ half_edge raccorder(half_edge e, gl_vertex** GQ, int precision) {
 half_edge testTubeEntier(int nbPoints, repere Rep, const point3d D, const point3d A, double R, int precision) {
 
     assert(nbPoints >= 2);
-    
+
     //int nbTotalCylindre = 10*nbPoints;
-    
+
     //Chercher les repères
-    
+
     //Le premier
     //V = vec(DA); J ortho à V ; I = V^J
     vecteur3d V = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
@@ -244,43 +268,54 @@ half_edge testTubeEntier(int nbPoints, repere Rep, const point3d D, const point3
 
     cp_vecteur3d(Acc, V);
     scal_prod3d(Acc, 0.5);
-    
+
     //Les suivants
     int i;
     for (i = 1; i < (nbPoints / 2); i++) {
         creerRepere(&Rep[2 * i], &Rep[2 * i + 1], &Rep[2 * i - 1], R, Acc);
     }
-    
+
     //Les repères doivent être ajustés pour suivre Bézier
     int k;
     for (k = 1; k < (nbPoints / 2); k++) {
         point3d_cell p;
-        bary3d3points(&p, 0.25, Rep[k].C, 0.5, Rep[k + 1].C, 0.25, Rep[k+2].C);
-        Rep[k+1].C -> x = p.x;
-        Rep[k+1].C -> y = p.y;
-        Rep[k+1].C -> z = p.z;
+        bary3d3points(&p, 0.25, Rep[k].C, 0.5, Rep[k + 1].C, 0.25, Rep[k + 2].C);
+        Rep[k + 1].C -> x = p.x;
+        Rep[k + 1].C -> y = p.y;
+        Rep[k + 1].C -> z = p.z;
     }
-    
+
     //Puis on doit créer des repères intermédiaires entre chaque paire de repères pour faire plus de cylindres
-    
-    for (i = 0; i < nbPoints; i++) {
-        assert(dot_prod3d(Rep[i].I,Rep[i].J) < 0.1);
-        assert(dot_prod3d(Rep[i].J,Rep[i].V) < 0.1);
-        assert(dot_prod3d(Rep[i].I,Rep[i].V) < 0.1);
+    repere RepIntermediaires = (repere) GC_malloc(nbPoints * 10 * sizeof (repere_cell));
+    double t;
+    for (k = 1; k < (nbPoints / 2); k++) {
+        for (i = 0; i < 20; i++) {
+            t = ((double) i) / 20;
+            creerRepereIntermediaire(RepIntermediaires, k, i, Rep, t);
+            //creerRepereIntermediaire(RepIntermediaires[(k-1) * 20 + i], Rep[k], Rep[k + 1], Rep[k + 2], t);
+        }
     }
-    
+
+    for (i = 0; i < 10*nbPoints - 20; i++) {
+        assert(dot_prod3d(RepIntermediaires[i].I, RepIntermediaires[i].J) < 0.1);
+        assert(dot_prod3d(RepIntermediaires[i].J, RepIntermediaires[i].V) < 0.1);
+        assert(dot_prod3d(RepIntermediaires[i].I, RepIntermediaires[i].V) < 0.1);
+    }
+
     //Pour chaque repère, fabriquer les GL_Vertex autour
-    for (i = 0; i < nbPoints; i++) {
-        creerPointsAutour(&Rep[i], R, precision);
+    creerPointsAutour(&Rep[0], R, precision);
+    creerPointsAutour(&Rep[1], R, precision);
+    for (i = 0; i < 10*nbPoints - 20; i++) {
+        creerPointsAutour(&RepIntermediaires[i], R, precision);
     }
-    
+
     //Raccorder (différent au premier tour)
-    half_edge e = raccorderDebut(Rep[0].PointsAutour, Rep[1].PointsAutour, precision );
-    
-    for (i = 1; i < nbPoints - 1; i++) {
-        e = raccorder(e, Rep[i+1].PointsAutour, precision);
+    half_edge e = raccorderDebut(Rep[0].PointsAutour, Rep[1].PointsAutour, precision);
+
+    for (i = 1; i < 10*nbPoints - 21; i++) {
+        e = raccorder(e, RepIntermediaires[i + 1].PointsAutour, precision);
     }
-    
+
     return e;
 
 }
@@ -289,10 +324,10 @@ half_edge old_testTubeEntier(int nbPoints, repere Rep, const point3d D, const po
 
     assert(nbPoints >= 2);
     half_edge test_cylindre(point3d D, point3d A, double R, int precision);
-    void testSqueletteDuTube(point3d resultats, int nbPoints, const point3d D , const point3d A , double R, int precision);
-    
+    void testSqueletteDuTube(point3d resultats, int nbPoints, const point3d D, const point3d A, double R, int precision);
+
     //Chercher les repères
-    
+
     //Le premier
     //V = vec(DA); J ortho à V ; I = V^J
     vecteur3d V = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
@@ -334,37 +369,37 @@ half_edge old_testTubeEntier(int nbPoints, repere Rep, const point3d D, const po
 
     cp_vecteur3d(Acc, V);
     scal_prod3d(Acc, 0.5);
-    
+
     //Les suivants
     int i;
     for (i = 1; i < (nbPoints / 2); i++) {
         creerRepere(&Rep[2 * i], &Rep[2 * i + 1], &Rep[2 * i - 1], R, Acc);
     }
-    
+
     for (i = 0; i < nbPoints; i++) {
-        assert(dot_prod3d(Rep[i].I,Rep[i].J) < 0.1);
-        assert(dot_prod3d(Rep[i].J,Rep[i].V) < 0.1);
-        assert(dot_prod3d(Rep[i].I,Rep[i].V) < 0.1);
+        assert(dot_prod3d(Rep[i].I, Rep[i].J) < 0.1);
+        assert(dot_prod3d(Rep[i].J, Rep[i].V) < 0.1);
+        assert(dot_prod3d(Rep[i].I, Rep[i].V) < 0.1);
     }
-    
+
     for (i = 0; i < nbPoints; i++) {
         printf("Point %d : centre (%f , %f , %f) V = (%f , %f , %f) I = (%f , %f , %f) J = (%f , %f , %f) \n",
-                i, Rep[i].C->x,  Rep[i].C->y,  Rep[i].C->z, Rep[i].V->x,  Rep[i].V->y,  Rep[i].V->z,
-                Rep[i].I->x,  Rep[i].I->y,  Rep[i].I->z, Rep[i].J->x,  Rep[i].J->y,  Rep[i].J->z);
+                i, Rep[i].C->x, Rep[i].C->y, Rep[i].C->z, Rep[i].V->x, Rep[i].V->y, Rep[i].V->z,
+                Rep[i].I->x, Rep[i].I->y, Rep[i].I->z, Rep[i].J->x, Rep[i].J->y, Rep[i].J->z);
     }
 
     //Pour chaque repère, fabriquer les GL_Vertex autour
     for (i = 0; i < nbPoints; i++) {
         creerPointsAutour(&Rep[i], R, precision);
     }
-    
+
     //Raccorder (différent au premier tour)
-    half_edge e = raccorderDebut(Rep[0].PointsAutour, Rep[1].PointsAutour, precision );
-    
+    half_edge e = raccorderDebut(Rep[0].PointsAutour, Rep[1].PointsAutour, precision);
+
     for (i = 1; i < nbPoints - 1; i++) {
-        e = raccorder(e, Rep[i+1].PointsAutour, precision);
+        e = raccorder(e, Rep[i + 1].PointsAutour, precision);
     }
-    
+
     return e;
 
 }

@@ -214,7 +214,6 @@ int drawGLScene(GLvoid) {
 
     if (gl_cylindre_initial) {
         glColor3f(0.7f, 0.2f, 0.2f);
-        //glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
         glDrawObject(gl_cylindre_initial);
     }
 
@@ -244,7 +243,6 @@ int drawMyVaisseau(GLvoid){
     
     if (gl_vaisseau) {
         glColor3f(0.7f, 0.2f, 0.2f);
-        //~ glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
         glDrawObject(gl_vaisseau);
     }
     
@@ -263,6 +261,7 @@ int drawMyScene(GLvoid) {
 
     /* Clear The Screen And The Depth Buffer */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 
     glLoadIdentity();
 
@@ -295,7 +294,6 @@ int drawMyScene(GLvoid) {
     vaisseau = creerVaisseau(0,0,0,0,0,Eye, Up, Jlocal, Vlocal);
     if (vaisseau) {
         
-        //glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
         gl_vaisseau = triangulation_poly_to_gl_object(vaisseau);
         if (gl_vaisseau) {
             printf("dessin vaisseau\n");
@@ -305,7 +303,6 @@ int drawMyScene(GLvoid) {
     }
     if (gl_cylindre_initial) {
         glColor3f(0.7f, 0.2f, 0.2f);
-        //glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
         glDrawObject(gl_cylindre_initial);
     }
 
