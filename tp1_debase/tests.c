@@ -48,15 +48,15 @@ void creerRepereIntermediaire(repere Res, int k, int i, const repere R, double t
     vecteur3d newI = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
     point3d newCentre = (point3d) GC_malloc(sizeof (point3d_cell));
 
-    bary3d3points(newCentre, (1 - t)*(1 - t), R[k].C, 2 * t * (1 - t), R[k+1].C, t*t, R[k+2].C);
-    moyenne3d3vecteurs(newI, (1 - t)*(1 - t), R[k].I, 2 * t * (1 - t), R[k+1].I, t*t, R[k+2].I);
-    moyenne3d3vecteurs(newJ, (1 - t)*(1 - t), R[k].J, 2 * t * (1 - t), R[k+1].J, t*t, R[k+2].J);
-    moyenne3d3vecteurs(newV, (1 - t)*(1 - t), R[k].V, 2 * t * (1 - t), R[k+1].V, t*t, R[k+2].V);
+    bary3d3points(newCentre, (1 - t)*(1 - t), R[2 * k].C, 2 * t * (1 - t), R[2 * k + 1].C, t*t, R[2 * k + 2].C);
+    moyenne3d3vecteurs(newI, (1 - t)*(1 - t), R[2 * k].I, 2 * t * (1 - t), R[2 * k + 1].I, t*t, R[2 * k + 2].I);
+    moyenne3d3vecteurs(newJ, (1 - t)*(1 - t), R[2 * k].J, 2 * t * (1 - t), R[2 * k + 1].J, t*t, R[2 * k + 2].J);
+    moyenne3d3vecteurs(newV, (1 - t)*(1 - t), R[2 * k].V, 2 * t * (1 - t), R[2 * k + 1].V, t*t, R[2 * k + 2].V);
 
-    Res[(k-1) * 20 + i].C = newCentre;
-    Res[(k-1) * 20 + i].I = newI;
-    Res[(k-1) * 20 + i].J = newJ;
-    Res[(k-1) * 20 + i].V = newV;
+    Res[k * 20 + i].C = newCentre;
+    Res[k * 20 + i].I = newI;
+    Res[k * 20 + i].J = newJ;
+    Res[k * 20 + i].V = newV;
 }
 
 void creerRepere(repere Res0, repere Res1, const repere R, double rayon, vecteur3d A) {
@@ -223,8 +223,6 @@ half_edge testTubeEntier(int nbPoints, repere Rep, const point3d D, const point3
 
     assert(nbPoints >= 2);
 
-    //int nbTotalCylindre = 10*nbPoints;
-
     //Chercher les repères
 
     //Le premier
@@ -277,26 +275,27 @@ half_edge testTubeEntier(int nbPoints, repere Rep, const point3d D, const point3
 
     //Les repères doivent être ajustés pour suivre Bézier
     int k;
-    for (k = 1; k < (nbPoints / 2); k++) {
+    for (k = 0; k < (nbPoints / 2) - 1; k++) {
         point3d_cell p;
-        bary3d3points(&p, 0.25, Rep[k].C, 0.5, Rep[k + 1].C, 0.25, Rep[k + 2].C);
-        Rep[k + 1].C -> x = p.x;
-        Rep[k + 1].C -> y = p.y;
-        Rep[k + 1].C -> z = p.z;
+        bary3d3points(&p, 0.25, Rep[2 * k].C, 0.5, Rep[2 * k + 1].C, 0.25, Rep[2 * k + 2].C);
+        Rep[2 * k + 1].C -> x = p.x;
+        Rep[2 * k + 1].C -> y = p.y;
+        Rep[2 * k + 1].C -> z = p.z;
     }
 
     //Puis on doit créer des repères intermédiaires entre chaque paire de repères pour faire plus de cylindres
-    repere RepIntermediaires = (repere) GC_malloc(nbPoints * 10 * sizeof (repere_cell));
+    repere RepIntermediaires = (repere) GC_malloc((nbPoints - 2) * 10 * sizeof (repere_cell));
     double t;
-    for (k = 1; k < (nbPoints / 2); k++) {
+    for (k = 0; k < (nbPoints / 2) - 1; k++) {
         for (i = 0; i < 20; i++) {
-            t = ((double) i) / 20;
-            creerRepereIntermediaire(RepIntermediaires, k, i, Rep, t);
-            //creerRepereIntermediaire(RepIntermediaires[(k-1) * 20 + i], Rep[k], Rep[k + 1], Rep[k + 2], t);
+            if (k > 0 || i > 10) {
+                t = ((double) i) / 20;
+                creerRepereIntermediaire(RepIntermediaires, k, i, Rep, t);
+            }
         }
     }
 
-    for (i = 0; i < 10*nbPoints - 20; i++) {
+    for (i = 11; i < 10 * nbPoints - 20; i++) {
         assert(dot_prod3d(RepIntermediaires[i].I, RepIntermediaires[i].J) < 0.1);
         assert(dot_prod3d(RepIntermediaires[i].J, RepIntermediaires[i].V) < 0.1);
         assert(dot_prod3d(RepIntermediaires[i].I, RepIntermediaires[i].V) < 0.1);
@@ -305,14 +304,14 @@ half_edge testTubeEntier(int nbPoints, repere Rep, const point3d D, const point3
     //Pour chaque repère, fabriquer les GL_Vertex autour
     creerPointsAutour(&Rep[0], R, precision);
     creerPointsAutour(&Rep[1], R, precision);
-    for (i = 0; i < 10*nbPoints - 20; i++) {
+    for (i = 11; i < 10 * nbPoints - 20; i++) {
         creerPointsAutour(&RepIntermediaires[i], R, precision);
     }
 
     //Raccorder (différent au premier tour)
     half_edge e = raccorderDebut(Rep[0].PointsAutour, Rep[1].PointsAutour, precision);
 
-    for (i = 1; i < 10*nbPoints - 21; i++) {
+    for (i = 10; i < 10 * nbPoints - 21; i++) {
         e = raccorder(e, RepIntermediaires[i + 1].PointsAutour, precision);
     }
 
