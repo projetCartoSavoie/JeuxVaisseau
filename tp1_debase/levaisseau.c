@@ -81,6 +81,13 @@ void creerPointsVaisseau(point3d* P) {
 
 void transformationUtilisateur(point3d* P, double ri, double rj, double rv, double ti, double tj) {
     
+    /* @Rémi : 
+     * Fait attention aux axes, j'ai remarqué que les coordonnées ne correspondent pas
+     * aux axes qu'on leur associe naturellement : 
+     * la coordonnée y des points correspond à l'axe horizontal de gauche à droite
+     * la coordonnée x des points correspond à l'axe vertical
+     * la coordonnée z des points correspond à l'axe horizontal d'avant en arrière
+     */
 }
 
 void mettreHorizontal(point3d* P) {
