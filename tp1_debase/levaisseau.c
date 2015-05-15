@@ -83,6 +83,19 @@ void transformationUtilisateur(point3d* P, double ri, double rj, double rv, doub
     
 }
 
+void mettreHorizontal(point3d* P) {
+    
+    int i;
+    for (i = 0; i < 16; i++) {
+        double x = P[i] -> x;
+        double y = P[i] -> y;
+        double z = P[i] -> z;
+        P[i] -> x = 0.141*x -0.99*z -1;
+        P[i] -> y = y;
+        P[i] -> z = 0.99*x - 0.141*z;
+    } 
+}
+
 void mettreDansTuyau(point3d* P, const point3d C, const vecteur3d I, const vecteur3d J, const vecteur3d V) {
     
     vecteur3d CP = (vecteur3d) GC_malloc(sizeof(vecteur3d_cell));
@@ -103,6 +116,7 @@ half_edge creerVaisseau(double ri,double rj, double rv, double ti, double tj, co
     }
 
     creerPointsVaisseau(P);
+    mettreHorizontal(P);
     printf("Point 0 du vaisseau : (%f , %f , %f)\n", P[0] -> x, P[0] -> y, P[0] -> z);
     mettreDansTuyau(P,C,Ilocal,Jlocal,Vlocal);
     printf("Point 0 du vaisseau dans le tuyau: (%f , %f , %f)\n", P[0] -> x, P[0] -> y, P[0] -> z);
