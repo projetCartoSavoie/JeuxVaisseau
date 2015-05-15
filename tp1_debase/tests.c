@@ -24,18 +24,6 @@ half_edge test_tetra() {
     return tetraedron(&v[1], &v[0], &v[2], &v[3]);
 }
 
-void cp_point3d(point3d R, const point3d D) {
-    R -> x = D -> x;
-    R -> y = D -> y;
-    R -> z = D -> z;
-}
-
-void cp_vecteur3d(vecteur3d R, const vecteur3d D) {
-    R -> x = D -> x;
-    R -> y = D -> y;
-    R -> z = D -> z;
-}
-
 //Pour faire la constante d'Euler à la fin
 unsigned int numfaces = 0;
 unsigned int numsommets = 0;

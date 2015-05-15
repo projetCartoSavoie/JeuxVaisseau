@@ -103,7 +103,9 @@ half_edge creerVaisseau(double ri,double rj, double rv, double ti, double tj, co
     }
 
     creerPointsVaisseau(P);
+    printf("Point 0 du vaisseau : (%f , %f , %f)\n", P[0] -> x, P[0] -> y, P[0] -> z);
     mettreDansTuyau(P,C,Ilocal,Jlocal,Vlocal);
+    printf("Point 0 du vaisseau dans le tuyau: (%f , %f , %f)\n", P[0] -> x, P[0] -> y, P[0] -> z);
     
     //Chercher les repères
     //Le premier

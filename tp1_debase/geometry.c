@@ -23,6 +23,18 @@ void zero2f(vecteur2f A) {
     A->y = 0.0;
 }
 
+void cp_point3d(point3d R, const point3d D) {
+    R -> x = D -> x;
+    R -> y = D -> y;
+    R -> z = D -> z;
+}
+
+void cp_vecteur3d(vecteur3d R, const vecteur3d D) {
+    R -> x = D -> x;
+    R -> y = D -> y;
+    R -> z = D -> z;
+}
+
 void add3d(vecteur3d A, const vecteur3d B) {
     A->x += B->x;
     A->y += B->y;

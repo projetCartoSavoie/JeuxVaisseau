@@ -77,6 +77,10 @@ void zero3d(vecteur3d A);
 void zero3f(vecteur3f A);
 void zero2d(vecteur2d A);
 void zero2f(vecteur2f A);
+
+void cp_point3d(point3d R, const point3d D);
+void cp_vecteur3d(vecteur3d R, const vecteur3d D);
+
 /* Addition de vecteurs, résultat dans le premier argument */
 void add3d(vecteur3d A, const vecteur3d B);
 void add3f(vecteur3f A, const vecteur3f B);
