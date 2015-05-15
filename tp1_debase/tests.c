@@ -195,11 +195,99 @@ half_edge raccorder(half_edge e, gl_vertex** GQ, int precision) {
     return e->prev->prev->opp->prev;
 }
 
-
 half_edge testTubeEntier(int nbPoints, repere Rep, const point3d D, const point3d A, double R, int precision) {
 
     assert(nbPoints >= 2);
-    //~ half_edge test_tetra();
+    
+    //int nbTotalCylindre = 10*nbPoints;
+    
+    //Chercher les repères
+    
+    //Le premier
+    //V = vec(DA); J ortho à V ; I = V^J
+    vecteur3d V = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
+    vecteur3d I = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
+    vecteur3d J = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
+    vecteur3d Acc = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
+
+    vec3d(V, D, A);
+
+    assert(!(V -> x == 0 && V -> y == 0 && V -> z == 0));
+    if (abs(V -> z) < abs(V -> x) && abs(V -> z) < abs(V -> y)) {
+        J -> x = V -> y;
+        J -> y = -(V -> x);
+        J -> z = 0;
+    } else if (abs(V -> x) < abs(V -> y)) {
+        J -> x = 0;
+        J -> y = V -> z;
+        J -> z = -(V -> y);
+    } else {
+        J -> x = V -> z;
+        J -> y = 0;
+        J -> z = -(V -> x);
+    }
+    normalize3d(J);
+
+    vec_prod3d(I, V, J);
+    normalize3d(I);
+
+    //Enregistrement des points D et A munis du repère I,J,V aux deux premières places
+    Rep[0].C = D;
+    Rep[0].I = J;
+    Rep[0].J = I;
+    Rep[0].V = V;
+
+    Rep[1].C = A;
+    Rep[1].I = J;
+    Rep[1].J = I;
+    Rep[1].V = V;
+
+    cp_vecteur3d(Acc, V);
+    scal_prod3d(Acc, 0.5);
+    
+    //Les suivants
+    int i;
+    for (i = 1; i < (nbPoints / 2); i++) {
+        creerRepere(&Rep[2 * i], &Rep[2 * i + 1], &Rep[2 * i - 1], R, Acc);
+    }
+    
+    //Les repères doivent être ajustés pour suivre Bézier
+    int k;
+    for (k = 1; k < (nbPoints / 2); k++) {
+        point3d_cell p;
+        bary3d3points(&p, 0.25, Rep[k].C, 0.5, Rep[k + 1].C, 0.25, Rep[k+2].C);
+        Rep[k+1].C -> x = p.x;
+        Rep[k+1].C -> y = p.y;
+        Rep[k+1].C -> z = p.z;
+    }
+    
+    //Puis on doit créer des repères intermédiaires entre chaque paire de repères pour faire plus de cylindres
+    
+    for (i = 0; i < nbPoints; i++) {
+        assert(dot_prod3d(Rep[i].I,Rep[i].J) < 0.1);
+        assert(dot_prod3d(Rep[i].J,Rep[i].V) < 0.1);
+        assert(dot_prod3d(Rep[i].I,Rep[i].V) < 0.1);
+    }
+    
+    //Pour chaque repère, fabriquer les GL_Vertex autour
+    for (i = 0; i < nbPoints; i++) {
+        creerPointsAutour(&Rep[i], R, precision);
+    }
+    
+    //Raccorder (différent au premier tour)
+    half_edge e = raccorderDebut(Rep[0].PointsAutour, Rep[1].PointsAutour, precision );
+    
+    for (i = 1; i < nbPoints - 1; i++) {
+        e = raccorder(e, Rep[i+1].PointsAutour, precision);
+    }
+    
+    return e;
+
+}
+
+half_edge old_testTubeEntier(int nbPoints, repere Rep, const point3d D, const point3d A, double R, int precision) {
+
+    assert(nbPoints >= 2);
     half_edge test_cylindre(point3d D, point3d A, double R, int precision);
     void testSqueletteDuTube(point3d resultats, int nbPoints, const point3d D , const point3d A , double R, int precision);
     
@@ -254,11 +342,9 @@ half_edge testTubeEntier(int nbPoints, repere Rep, const point3d D, const point3
     }
     
     for (i = 0; i < nbPoints; i++) {
-        printf("vérification numéro %d\n", i);
-        printf("%f  %f  %f\n",dot_prod3d(Rep[i].I,Rep[i].J),dot_prod3d(Rep[i].J,Rep[i].V),dot_prod3d(Rep[i].I,Rep[i].V));
-        /*assert(dot_prod3d(Rep[i].I,Rep[i].J) < 0.1);
+        assert(dot_prod3d(Rep[i].I,Rep[i].J) < 0.1);
         assert(dot_prod3d(Rep[i].J,Rep[i].V) < 0.1);
-        assert(dot_prod3d(Rep[i].I,Rep[i].V) < 0.1);*/
+        assert(dot_prod3d(Rep[i].I,Rep[i].V) < 0.1);
     }
     
     for (i = 0; i < nbPoints; i++) {
