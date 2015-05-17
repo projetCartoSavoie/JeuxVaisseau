@@ -77,6 +77,10 @@ void zero3d(vecteur3d A);
 void zero3f(vecteur3f A);
 void zero2d(vecteur2d A);
 void zero2f(vecteur2f A);
+
+void cp_point3d(point3d R, const point3d D);
+void cp_vecteur3d(vecteur3d R, const vecteur3d D);
+
 /* Addition de vecteurs, résultat dans le premier argument */
 void add3d(vecteur3d A, const vecteur3d B);
 void add3f(vecteur3f A, const vecteur3f B);
@@ -114,6 +118,10 @@ void scal_prod3d(vecteur3d A, double l);
 void scal_prod3f(vecteur3f A, float l);
 void scal_prod2d(vecteur2d A, double l);
 void scal_prod2f(vecteur2f A, float l);
+
+/* changement de repere */
+void chge_rep3d(vecteur3d Res, double u, const vecteur3d I, double v, const vecteur3d J, double w, const vecteur3d K);
+void trouve_extremite(point3d Res, const vecteur3d V, const point3d O);
 
 /* carrée de la norme (norm2_xxx), norme (norm_xxx) 
    et normalisation (division par la norme */

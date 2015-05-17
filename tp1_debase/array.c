@@ -204,10 +204,12 @@ gl_object* triangulation_poly_to_gl_object(half_edge e) {
 
   void incr_nbt(half_edge e, gl_vertex* v1, gl_vertex* v2, gl_vertex* v3) { nb_triangles++; }
   iter_triangles(e, incr_nbt);
+  
 
   size_t nb_vertices = nb_triangles * 3;
 
   gl_vertex* v0 = e->vertex;
+  
 
   gl_object* obj =  (gl_object*) GC_malloc(sizeof(gl_object));
   obj->vertex_type = v0 -> vertex_type;
@@ -248,6 +250,7 @@ gl_object* triangulation_poly_to_gl_object(half_edge e) {
     union vecteurs N0;
 
     if (obj->normal_type == GL_DOUBLE) {
+       
       point3d A=w1->coord.a3d, B=w2->coord.a3d, C=w3->coord.a3d;
       vecteur3d_cell AB, AC;
       vecteur3d N = N0.a3d = (vecteur3d) GC_malloc(sizeof(vecteur3d_cell));
@@ -283,7 +286,9 @@ gl_object* triangulation_poly_to_gl_object(half_edge e) {
     memcpy(obj->normals.raw + (i+1) * coord_size, N.raw, coord_size);
     memcpy(obj->normals.raw + (i+2) * coord_size, N.raw, coord_size);
 
+    
     GC_free(N.raw);
+    
 
     switch(obj->index_type) {
     case GL_UNSIGNED_BYTE:
@@ -308,6 +313,7 @@ gl_object* triangulation_poly_to_gl_object(half_edge e) {
   }
 
   iter_triangles(e, sett);
+
 
   return(obj);
 
