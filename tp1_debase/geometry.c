@@ -179,6 +179,18 @@ void trouve_extremite(point3d Res, const vecteur3d V, const point3d O) {
     Res -> z = V -> z + O -> z;
 }
 
+void mul_pt3d_matrice(point3d Res, const double** rotateMatrice){
+	res->x = rotateMatrice[0][0] * res->x + rotateMatrice[0][1] * res->y + rotateMatrice[0][2] * res->z;
+	res->y = rotateMatrice[1][0] * res->x + rotateMatrice[1][1] * res->y + rotateMatrice[1][2] * res->z;
+	res->z = rotateMatrice[2][0] * res->x + rotateMatrice[2][1] * res->y + rotateMatrice[2][2] * res->z;
+}
+
+void mul_pt3d_matrice(double** rotateMatrice, const double angle){
+	rotateMatrice[0][0] * res->x + rotateMatrice[0][1] * res->y + rotateMatrice[0][2] * res->z;
+	rotateMatrice[1][0] * res->x + rotateMatrice[1][1] * res->y + rotateMatrice[1][2] * res->z;
+	rotateMatrice[2][0] * res->x + rotateMatrice[2][1] * res->y + rotateMatrice[2][2] * res->z;
+}
+
 double norm2_3d(const vecteur3d A) {
     return (A->x * A->x + A->y * A->y + A->z * A->z);
 }

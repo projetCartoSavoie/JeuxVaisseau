@@ -41,6 +41,11 @@ SDL_WindowFlags fullScreenValue[FULLSCREENNB] = {0, SDL_WINDOW_FULLSCREEN, SDL_W
 int currentFullscreen = 0;
 int currentView = SCENE_ENTIERE;
 int currentStep = 10;
+int transI = 0;
+int transJ = 0;
+int rotV = 0;
+int rotI = 0;
+int rotJ = 0;
 
 /* fonction pour quitter */
 void Quit(int returnCode) {
@@ -153,7 +158,7 @@ void initGLScene() {
 
 
     cylindre_initial = testTubeEntier(nbPoints, Rep, D, A, R, precision);
-    vaisseau = creerVaisseau(0,0,0,0,0,Rep[1].C, Rep[1].I, Rep[1].J, Rep[1].V);
+    vaisseau = creerVaisseau(rotI,rotJ,rotV,transI,transJ,Rep[1].C, Rep[1].I, Rep[1].J, Rep[1].V);
 
    
     if (cylindre_initial) {
@@ -291,15 +296,8 @@ int drawMyScene(GLvoid) {
             (float) (Cible->x), (float) (Cible->y), (float) (Cible->z),
             (float) (Up->x), (float) (Up->y), (float) (Up->z));
 
-	//Veirification des mouvements de l'utilisateur
-	//Fleche droite translation à droite
-	//Fleche gauche translation à gauche
-	//Touche 'q' rotation à gauche
-	//Touche 'd' rotation à droite
-	//Touche 'z' rotation vers l'avant
-	//Touche 's' rotation vers l'arriére
 
-    vaisseau = creerVaisseau(0,0,0,0,0,Eye, Up, Jlocal, Vlocal);
+    vaisseau = creerVaisseau(rotI,rotJ,rotV,transI,transJ,Eye, Up, Jlocal, Vlocal);
     if (vaisseau) {
         
         gl_vaisseau = triangulation_poly_to_gl_object(vaisseau);
@@ -324,13 +322,6 @@ int drawMyScene(GLvoid) {
     return (1);
 }
 
-//Fleche droite translation à droite
-//Fleche gauche translation à gauche
-//Touche 'q' rotation à gauche
-//Touche 'd' rotation à droite
-//Touche 'z' rotation vers l'avant
-//Touche 's' rotation vers l'arriére
-
 /* fonction de gestion du clavier */
 void handleKeyPress(SDL_Keysym *keysym) {
     switch (keysym->sym) {
@@ -350,7 +341,7 @@ void handleKeyPress(SDL_Keysym *keysym) {
 			currentView = DANS_LE_TUBE;
 			drawMyScene();
             break;
-        case SDLK_s:
+        case SDLK_x:
 			currentView = SCENE_ENTIERE;
 			drawGLScene();
 			break;
@@ -358,7 +349,37 @@ void handleKeyPress(SDL_Keysym *keysym) {
 			currentView = VAISSEAU;
 			drawMyVaisseau();
 			break;
-        case SDLK_q:
+        case SDLK_LEFT:
+			//Translation gauche sur "J"
+			
+			break;
+		case SDLK_RIGHT:
+			//Translation droite sur "J"
+			break;
+		case SDLK_z:
+			//Translation montante sur "I"
+			break;
+		case SDLK_s:
+			//Translation descendante sur "I"
+			break;
+		case SDLK_q:
+			//rotation gauche sur "v"
+			break;
+		case SDLK_d:
+			//rotation droite sur "v"
+			break;
+		case SDLK_j:
+			//rotation gauche sur "I"
+			break;
+		case SDLK_l:
+			//rotation droite sur "I"
+			break;
+		case SDLK_i:
+			//rotation avant sur "J"
+			break;
+		case SDLK_k:
+			//rotation arriére sur "J"
+			break;
         case SDLK_ESCAPE:
             /* ESC key was pressed */
             Quit(0);

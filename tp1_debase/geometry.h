@@ -123,6 +123,9 @@ void scal_prod2f(vecteur2f A, float l);
 void chge_rep3d(vecteur3d Res, double u, const vecteur3d I, double v, const vecteur3d J, double w, const vecteur3d K);
 void trouve_extremite(point3d Res, const vecteur3d V, const point3d O);
 
+/* Multiplication d'un point par une matrice */
+void mul_pt3d_matrice(point3d Res, const double** rotateMatrice);
+
 /* carrée de la norme (norm2_xxx), norme (norm_xxx) 
    et normalisation (division par la norme */
 double norm2_3d(const vecteur3d A);

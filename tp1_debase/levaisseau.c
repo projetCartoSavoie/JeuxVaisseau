@@ -132,7 +132,7 @@ void creerPointsVaisseau(point3d* P) {
 //Ajouter un paver autour du vaisseau.
 
 void transformationUtilisateur(point3d* P, double ri, double rj, double rv, double ti, double tj) {
-    
+    printf("Transformation Utilisateur : \n");
     /* @Rémi : 
      * Fait attention aux axes, j'ai remarqué que les coordonnées ne correspondent pas
      * aux axes qu'on leur associe naturellement : 
@@ -140,6 +140,25 @@ void transformationUtilisateur(point3d* P, double ri, double rj, double rv, doub
      * la coordonnée x des points correspond à l'axe vertical
      * la coordonnée z des points correspond à l'axe horizontal d'avant en arrière
      */
+     int i;
+     point3d first = (point3d) GC_malloc(sizeof (point3d_cell));
+     point3d second = (point3d) GC_malloc(sizeof (point3d_cell));
+     vecteur3d vTij = (vecteur3d) GC_malloc(sizeof (vecteur3d_cell));
+     
+     //Translation on vect i and vect j -- Touche : 'z;s' and 'left;right'
+     first->x = 0.0f;
+     first->y = 0.0f;
+     first->z = 0.0f;
+     second->x = 0.0f;
+     second->y = (float) ti;
+     second->z = (float) tj;
+     printf("Point 1 (%f, %f, %f) -- Point 2 (%f, %f, %f) : \n",first->x,first->y,first->z,second->x,second->y,second->z);
+     vec3d(vTij,first,second);
+     for (i = 0; i < 24; i++) {
+			translate3d(P[i], 1.0, vTij);
+     }
+     
+     //Rotate for ri, rj ,rv
 }
 
 void mettreHorizontal(point3d* P) {
@@ -168,13 +187,14 @@ void mettreDansTuyau(point3d* P, const point3d C, const vecteur3d I, const vecte
 half_edge creerVaisseau(double ri,double rj, double rv, double ti, double tj, const point3d C, const vecteur3d Ilocal, const vecteur3d Jlocal, const vecteur3d Vlocal) {
 
     //Point de base 1 & 2
-    point3d* P = (point3d*) GC_malloc(16 * sizeof (point3d));
+    point3d* P = (point3d*) GC_malloc(24 * sizeof (point3d));
     int i;
     for (i = 0; i < 24; i++) {
         P[i] = (point3d) GC_malloc(sizeof (point3d_cell));
     }
 
     creerPointsVaisseau(P);
+    transformationUtilisateur(P,ri,rj,rv,ti,tj);
     mettreHorizontal(P);
     printf("Point 0 du vaisseau : (%f , %f , %f)\n", P[0] -> x, P[0] -> y, P[0] -> z);
     mettreDansTuyau(P,C,Ilocal,Jlocal,Vlocal);
