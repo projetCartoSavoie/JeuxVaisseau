@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="95">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="HeaderFiles"
+                   displayName="Header Files"
+                   projectFiles="true">
+      <itemPath>array.h</itemPath>
+      <itemPath>gc.h</itemPath>
+      <itemPath>geometry.h</itemPath>
+      <itemPath>repere.h</itemPath>
+      <itemPath>triangulation.h</itemPath>
+      <itemPath>triangulation_tools.h</itemPath>
+      <itemPath>tube.h</itemPath>
+      <itemPath>vaisseau.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ResourceFiles"
+                   displayName="Resource Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="SourceFiles"
+                   displayName="Source Files"
+                   projectFiles="true">
+      <itemPath>array.c</itemPath>
+      <itemPath>geometry.c</itemPath>
+      <itemPath>main.c</itemPath>
+      <itemPath>triangulation.c</itemPath>
+      <itemPath>triangulation_tools.c</itemPath>
+      <itemPath>tube.c</itemPath>
+      <itemPath>vaisseau.c</itemPath>
+    </logicalFolder>
+    <logicalFolder name="TestFiles"
+                   displayName="Test Files"
+                   projectFiles="false"
+                   kind="TEST_LOGICAL_FOLDER">
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Debug" type="1">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+      </compileType>
+      <item path="array.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="array.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="gc.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="geometry.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="geometry.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="main.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="repere.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="triangulation.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="triangulation.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="triangulation_tools.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="triangulation_tools.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tube.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="tube.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="vaisseau.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="vaisseau.h" ex="false" tool="3" flavor2="0">
+      </item>
+    </conf>
+    <conf name="Release" type="1">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>5</developmentMode>
+        </cTool>
+        <ccTool>
+          <developmentMode>5</developmentMode>
+        </ccTool>
+        <fortranCompilerTool>
+          <developmentMode>5</developmentMode>
+        </fortranCompilerTool>
+        <asmTool>
+          <developmentMode>5</developmentMode>
+        </asmTool>
+      </compileType>
+      <item path="array.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="array.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="gc.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="geometry.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="geometry.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="main.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="repere.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="triangulation.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="triangulation.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="triangulation_tools.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="triangulation_tools.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tube.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="tube.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="vaisseau.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="vaisseau.h" ex="false" tool="3" flavor2="0">
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>
