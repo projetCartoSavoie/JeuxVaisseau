@@ -9,12 +9,12 @@
 Pour voir le résultat, entrez les commandes :
 ---------------------------------------------
 
-	(make depend)
+	make depend 
 	make
 	./main.exe
 
-Ce que nous avons fait pour ce TP :
------------------------------------
+Ce que nous avons fait pour ce TP (Version Stable):
+---------------------------------------------------
 
 	** Tube **
 
@@ -37,8 +37,8 @@ Ce que nous avons fait pour ce TP :
 		On utilise ensuite des transformations correspondants à un changement de repère (repère scène -> repère local) pour dessiner le vaisseau à l'endroit correspondant.
 
 
-Ce qui reste à faire / est en cours :
--------------------------------------
+Ce qui reste à faire / est en cours (Version Instable):
+-------------------------------------------------------
 
 	Permettre à l'utilisateur de dévier le vaisseau de sa trajectoire et d'effectuer des rotations par l'action du joueur. Notre stratégie est d'effectuer ces transformations sur le vaisseau lorsqu'il est placé en (0,0,0) après l'avoir placé à l'horizontal par rapport au tube (étape 1 de la partie vaisseau), puis d'effectuer les étapes suivantes de la partie vaisseau.
 	Calculer les collisions en 3 étapes :

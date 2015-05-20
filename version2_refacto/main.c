@@ -136,7 +136,7 @@ int initGL(GLvoid) {
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glDisable(GL_CULL_FACE);
-    glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+    //glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 
     /* Really Nice Perspective Calculations */
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
